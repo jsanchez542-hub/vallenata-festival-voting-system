@@ -198,25 +198,48 @@
   border-top: 1px solid var(--color-line-strong);
 }
 
-.demo-accounts {
-  margin-top: var(--space-5);
-  border: 2px solid var(--color-ink);
-}
-
-.demo-accounts summary {
-  display: flex;
-  align-items: center;
-  min-height: var(--touch-target);
-  padding-inline: var(--space-4);
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.demo-accounts__body {
+.demo-access {
   display: grid;
-  gap: var(--space-3);
-  padding: 0 var(--space-4) var(--space-4);
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+  padding: var(--space-6) var(--space-5);
+  background: var(--color-tint);
+  border-left: 6px solid var(--color-primary);
+}
+
+.demo-access__title {
+  font-size: var(--text-xl);
+  color: var(--color-primary);
+}
+
+.demo-access__accounts {
+  display: grid;
+  gap: var(--space-2);
   font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+}
+
+.demo-access__accounts dt {
+  display: inline;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+
+.demo-access__accounts dt::after {
+  content: ": ";
+}
+
+.demo-access__accounts dd {
+  display: inline;
+  margin: 0;
+}
+
+.auth-form__heading {
+  margin-bottom: var(--space-5);
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  font-stretch: 85%;
 }
 
 .flow-progress {

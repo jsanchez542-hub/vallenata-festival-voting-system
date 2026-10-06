@@ -155,10 +155,12 @@ function buildFooter(root) {
         ),
       ),
       column(
-        "Datos de ejemplo",
+        "Probar el prototipo",
         el(
           "div",
           { class: "site-footer__links" },
+          el("a", { href: `${root}sign-in.html` }, "Cuentas de demostración"),
+          el("a", { href: `${root}admin/dashboard.html` }, "Administración"),
           el(
             "button",
             {
