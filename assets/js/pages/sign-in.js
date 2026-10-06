@@ -19,11 +19,17 @@ if (params.get("reason") === "admin") {
   mount(alertSlot, notice("warning", "Esta sección es solo para administración. Ingresa con una cuenta de administración para continuar."));
 }
 
+function enter(user) {
+  const isAdmin = user.role === "admin";
+  const fallback = isAdmin ? "admin/dashboard.html" : "polls.html?status=open";
+  const canFollowNext = next && (isAdmin || !next.startsWith("admin/"));
+  location.assign(canFollowNext ? next : fallback);
+}
+
 document.querySelectorAll("[data-demo-account]").forEach((button) => {
   button.addEventListener("click", () => {
-    form.elements.email.value = button.dataset.email;
-    form.elements.password.value = button.dataset.password;
-    form.elements.email.focus();
+    const result = signIn(button.dataset.email, button.dataset.password);
+    if (result.ok) enter(result.user);
   });
 });
 
@@ -43,6 +49,5 @@ form?.addEventListener("submit", (event) => {
     mount(alertSlot, notice("danger", result.error));
     return;
   }
-  const fallback = result.user.role === "admin" ? "admin/dashboard.html" : "polls.html?status=open";
-  location.assign(next ?? fallback);
+  enter(result.user);
 });

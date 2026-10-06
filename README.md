@@ -104,7 +104,7 @@ Then open http://localhost:8080.
 | Voter | votante@ejemplo.co | Votante2027 |
 | Administrator | admin@ejemplo.co | Admin2027 |
 
-You can also create your own voter account. The footer has a button to restore the sample data.
+The sign-in page has one-click buttons for both accounts, and every page links to it from the footer. You can also create your own voter account, and the footer has a button to restore the sample data.
 
 ## Project structure
 

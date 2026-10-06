@@ -27,6 +27,20 @@
       </div>
     </section>
     <div class="container container--narrow auth-form">
+      <section class="demo-access" aria-labelledby="demo-title">
+        <h2 class="demo-access__title" id="demo-title">Probar el prototipo</h2>
+        <p>Entra con una cuenta de demostración. Los datos se guardan solo en este navegador.</p>
+        <div class="cluster">
+          <button class="button" type="button" data-demo-account data-email="votante@ejemplo.co" data-password="Votante2027">Entrar como votante</button>
+          <button class="button button--outline" type="button" data-demo-account data-email="admin@ejemplo.co" data-password="Admin2027">Entrar como administración</button>
+        </div>
+        <dl class="demo-access__accounts">
+          <div><dt>Votante</dt><dd>votante@ejemplo.co, contraseña Votante2027</dd></div>
+          <div><dt>Administración</dt><dd>admin@ejemplo.co, contraseña Admin2027</dd></div>
+        </dl>
+      </section>
+
+      <h2 class="auth-form__heading">Ingresar con correo</h2>
       <div id="form-alert" aria-live="assertive"></div>
       <form id="sign-in-form" class="form-grid" novalidate>
         <div class="field" data-field="email">
@@ -43,19 +57,6 @@
           <button class="button" type="submit">Ingresar</button>
         </div>
       </form>
-
-      <details class="demo-accounts">
-        <summary>Cuentas de demostración</summary>
-        <div class="demo-accounts__body">
-          <p>Este prototipo no envía datos a ningún servidor. Usa una de estas cuentas para recorrer el flujo.</p>
-          <p><strong>Votante:</strong> votante@ejemplo.co, contraseña Votante2027</p>
-          <p><strong>Administración:</strong> admin@ejemplo.co, contraseña Admin2027</p>
-          <div class="cluster">
-            <button class="button button--outline button--small" type="button" data-demo-account data-email="votante@ejemplo.co" data-password="Votante2027">Usar cuenta de votante</button>
-            <button class="button button--outline button--small" type="button" data-demo-account data-email="admin@ejemplo.co" data-password="Admin2027">Usar cuenta de administración</button>
-          </div>
-        </div>
-      </details>
 
       <p class="auth-form__alt">¿Aún no tienes cuenta? <a href="sign-up.html">Crear cuenta</a></p>
     </div>
