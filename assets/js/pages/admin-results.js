@@ -127,8 +127,8 @@ function render() {
 
 function leaderFigure(poll) {
   const leader = tally(poll.id).rows.find((row) => row.leading);
-  if (!leader) return el("dd", {}, "Sin votos");
-  return el("dd", {}, leader.option.name, el("span", { class: "stat__note" }, formatPercent(leader.share)));
+  if (!leader) return el("dd", { class: "stat__text" }, "Sin votos");
+  return el("dd", { class: "stat__text" }, leader.option.name, el("span", { class: "stat__note" }, formatPercent(leader.share)));
 }
 
 if (context) render();

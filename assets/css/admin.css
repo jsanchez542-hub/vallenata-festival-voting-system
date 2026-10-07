@@ -271,6 +271,10 @@ body[data-area="admin"] .input {
   font-variant-numeric: tabular-nums;
 }
 
+.stat .stat__text {
+  font-size: var(--text-xl);
+}
+
 .stat__note {
   display: block;
   margin-top: var(--space-1);
@@ -278,19 +282,6 @@ body[data-area="admin"] .input {
   font-weight: 400;
   font-stretch: 100%;
   color: var(--color-ink-soft);
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-}
-
-.toolbar .field {
-  min-width: min(100%, 18rem);
 }
 
 .status-line {
@@ -398,6 +389,10 @@ body[data-area="admin"] .input {
   .console-main {
     min-width: 0;
   }
+
+  html:has(.console-sidebar[data-open="true"]) {
+    overflow: hidden;
+  }
 }
 
 @media (min-width: 48rem) {
@@ -462,6 +457,10 @@ body[data-area="admin"] .input {
     gap: var(--space-3);
     padding: var(--space-1) 0;
     border: 0;
+  }
+
+  .data-table--stacked td > * {
+    justify-self: start;
   }
 
   .data-table--stacked td::before {

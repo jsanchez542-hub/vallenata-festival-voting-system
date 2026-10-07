@@ -26,6 +26,8 @@
   --color-muted: #5c6166;
   --color-line: #dee2e6;
   --color-line-strong: #b9bec3;
+  --color-field-border: #868e96;
+  --color-focus-ring: rgb(0 106 193 / 0.22);
   --color-surface: #ffffff;
   --color-paper: #ffffff;
   --color-paper-alt: #ededed;
