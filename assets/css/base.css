@@ -116,8 +116,13 @@ legend {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-accent);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+html:has(dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 .on-stage :focus-visible {

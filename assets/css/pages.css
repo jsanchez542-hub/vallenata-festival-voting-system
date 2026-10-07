@@ -354,8 +354,8 @@
 }
 
 .choice__input:focus-visible + .choice__body {
-  outline: 3px solid var(--color-ink);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 .choice__input:checked + .choice__body {

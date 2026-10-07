@@ -19,7 +19,25 @@ function buildControl(definition) {
     return el("textarea", { ...base, class: "input", rows: rows ?? 3, required, disabled }, value);
   }
   if (type === "file") {
-    return el("input", { ...base, class: "input", type, accept, required, disabled });
+    const fileName = el("span", { class: "file-picker__name" }, "Ningún archivo elegido");
+    const input = el("input", {
+      ...base,
+      class: "file-picker__input visually-hidden",
+      type,
+      accept,
+      required,
+      disabled,
+      onchange: () => {
+        fileName.textContent = input.files[0]?.name ?? "Ningún archivo elegido";
+      },
+    });
+    return el(
+      "div",
+      { class: "file-picker" },
+      input,
+      el("label", { class: "button button--outline button--small file-picker__button", for: id }, "Elegir archivo"),
+      fileName,
+    );
   }
   return el("input", { ...base, class: "input", type, value, required, autocomplete, min, max, step, disabled });
 }

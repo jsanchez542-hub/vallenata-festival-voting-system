@@ -14,7 +14,7 @@ const actor = context?.user;
 const DEFAULT_DURATION_MS = 7 * 24 * 3600 * 1000;
 
 function selectOptions(labels) {
-  return Object.entries(labels).map(([value, label]) => ({ value, label }));
+  return Object.entries(labels).map(([value, label]) => ({ value, label: label.charAt(0).toUpperCase() + label.slice(1) }));
 }
 
 function pollFields(poll) {

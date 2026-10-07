@@ -171,7 +171,7 @@ function categorySection() {
     el(
       "div",
       { class: "section-heading" },
-      el("h2", { id: "categories-title" }, edition ? `Categorías de ${edition.name}` : "Categorías"),
+      el("h2", { id: "categories-title" }, edition ? "Categorías de la edición vigente" : "Categorías"),
       edition ? el("button", { class: "button button--small", type: "button", onclick: () => openCategoryForm(null) }, "Nueva categoría") : null,
     ),
     categories.length
