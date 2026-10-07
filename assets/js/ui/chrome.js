@@ -28,10 +28,10 @@ function navLink(link, root, activeKey) {
   );
 }
 
-function accountItems(user, root, area) {
+function accountItems(user, root) {
   if (user) {
     const items = [];
-    if (user.role === "admin" && area !== "admin") {
+    if (user.role === "admin") {
       items.push(el("li", {}, el("a", { class: "site-nav__link", href: `${root}admin/dashboard.html` }, "Administración")));
     }
     items.push(
@@ -60,17 +60,16 @@ function accountItems(user, root, area) {
   ];
 }
 
-function buildHeader({ user, root, area, page }) {
+function buildHeader({ user, root, page }) {
   const navId = "site-nav";
-  const links = area === "admin" ? [{ key: "public", label: "Ver sitio público", href: "index.html" }] : PUBLIC_LINKS;
   const nav = el(
     "nav",
     { class: "site-nav", id: navId, "aria-label": "Principal", "data-open": "false" },
     el(
       "ul",
       { class: "site-nav__list container" },
-      links.map((link) => navLink(link, root, area === "admin" ? "" : page)),
-      accountItems(user, root, area),
+      PUBLIC_LINKS.map((link) => navLink(link, root, page)),
+      accountItems(user, root),
     ),
   );
   const toggle = el(
@@ -123,12 +122,94 @@ function buildHeader({ user, root, area, page }) {
             height: "62",
             alt: "Leyenda Vallenata, votaciones del público. Ir al inicio",
           }),
-          area === "admin" ? el("span", { class: "brand__area" }, "Administración") : null,
         ),
         toggle,
         nav,
       ),
     ),
+  );
+}
+
+function buildConsole({ user, root, page }) {
+  const sidebarId = "console-sidebar";
+  const logo = () =>
+    el("img", {
+      src: `${root}assets/img/brand/logo-on-dark.svg`,
+      width: "371",
+      height: "62",
+      alt: "Leyenda Vallenata, votaciones del público",
+    });
+
+  const sidebar = el(
+    "aside",
+    { class: "console-sidebar", id: sidebarId, "data-open": "false", "aria-label": "Administración" },
+    el("a", { class: "console-brand", href: `${root}admin/dashboard.html` }, logo()),
+    el(
+      "nav",
+      { "aria-label": "Secciones de administración" },
+      el(
+        "ul",
+        { class: "console-nav" },
+        ADMIN_LINKS.map((link) =>
+          el(
+            "li",
+            {},
+            el("a", { class: "console-nav__link", href: link.href, "aria-current": link.key === page ? "page" : undefined }, link.label),
+          ),
+        ),
+      ),
+    ),
+    el(
+      "div",
+      { class: "console-account" },
+      el("p", { class: "console-account__name" }, user.name),
+      el("p", { class: "console-account__role" }, "Administrador"),
+      el("a", { class: "console-link", href: `${root}index.html` }, "Ver sitio público"),
+      el(
+        "button",
+        {
+          class: "console-link",
+          type: "button",
+          onclick: () => {
+            signOut();
+            location.assign(`${root}index.html`);
+          },
+        },
+        "Cerrar sesión",
+      ),
+      el("p", { class: "console-note" }, "Prototipo académico de ", el("strong", {}, "Migue Studio"), ". Datos de ejemplo."),
+    ),
+  );
+
+  const scrim = el("div", { class: "console-scrim", hidden: true });
+  const toggle = el(
+    "button",
+    { class: "nav-toggle", type: "button", "aria-expanded": "false", "aria-controls": sidebarId },
+    icon("menu"),
+    el("span", { class: "visually-hidden" }, "Abrir menú"),
+  );
+
+  const setOpen = (isOpen) => {
+    sidebar.dataset.open = String(isOpen);
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    scrim.hidden = !isOpen;
+  };
+  toggle.addEventListener("click", () => setOpen(sidebar.dataset.open !== "true"));
+  scrim.addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && sidebar.dataset.open === "true") {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  return el(
+    "div",
+    {},
+    el("a", { class: "skip-link", href: "#main" }, "Saltar al contenido"),
+    el("header", { class: "console-topbar" }, logo(), toggle),
+    scrim,
+    sidebar,
   );
 }
 
@@ -209,20 +290,6 @@ export function renderBreadcrumb(items) {
   );
 }
 
-function buildAdminNav(activeKey) {
-  return el(
-    "nav",
-    { class: "admin-nav", "aria-label": "Secciones de administración" },
-    ADMIN_LINKS.map((link) =>
-      el(
-        "a",
-        { class: "admin-nav__link", href: link.href, "aria-current": link.key === activeKey ? "page" : undefined },
-        link.label,
-      ),
-    ),
-  );
-}
-
 function redirectToSignIn(root, area, reason) {
   const file = location.pathname.split("/").pop() || "index.html";
   const next = `${area === "admin" ? "admin/" : ""}${file}${location.search}`;
@@ -242,9 +309,11 @@ export function boot({ requires } = {}) {
     redirectToSignIn(root, area, user ? "admin" : undefined);
     return null;
   }
-  document.querySelector("[data-slot='header']")?.replaceWith(buildHeader({ user, root, area, page }));
-  document.querySelector("[data-slot='footer']")?.replaceWith(buildFooter(root));
-  document.querySelector("[data-slot='admin-nav']")?.replaceWith(buildAdminNav(page));
-  document.querySelector(".admin-nav [aria-current]")?.scrollIntoView({ inline: "center", block: "nearest" });
+  if (area === "admin") {
+    document.querySelector("[data-slot='header']")?.replaceWith(buildConsole({ user, root, page }));
+  } else {
+    document.querySelector("[data-slot='header']")?.replaceWith(buildHeader({ user, root, page }));
+    document.querySelector("[data-slot='footer']")?.replaceWith(buildFooter(root));
+  }
   return { user, root };
 }
