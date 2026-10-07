@@ -143,6 +143,7 @@ function buildFooter(root) {
       column(
         "Votaciones del Festival",
         el("p", {}, "Prototipo de la Entrega 1 de Desarrollo Web, Fundación Universitaria del Área Andina."),
+        el("p", {}, el("a", { href: "https://festivalvallenato.com", rel: "noopener" }, "Ir al sitio oficial del Festival")),
       ),
       el(
         "nav",
