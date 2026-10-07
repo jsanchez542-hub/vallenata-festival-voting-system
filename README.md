@@ -19,7 +19,7 @@ The voter journey, on mobile first:
 3. Read the rules of a poll, choose an option, confirm the vote and receive a receipt code.
 4. See results when the poll allows it.
 
-The administration area:
+The administration area is a separate console with its own layout (dark sidebar, denser cards and tables, its own stylesheet) so it does not read as part of the public site:
 
 - Editions and categories.
 - Polls: dates, publication and rules.
@@ -110,7 +110,7 @@ The sign-in page has one-click buttons for both accounts, and every page links t
 
 ```
 assets/
-  css/        Design tokens, base, layout, components and page styles
+  css/        Design tokens, base, layout, components, page styles and admin console
   fonts/      Self-hosted fonts
   img/        Photos, favicons and social preview card
     brand/    Logo and symbol in every color version
@@ -118,7 +118,7 @@ assets/
     data/     Seed, storage, authentication, poll rules and admin operations
     ui/       DOM helpers, layout chrome, forms, tables and views
     pages/    One module per page
-admin/        Administration pages
+admin/        Administration console pages
 docs/         Screenshots
 ```
 

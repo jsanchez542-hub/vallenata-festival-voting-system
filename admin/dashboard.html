@@ -11,23 +11,19 @@
   <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="../assets/img/favicon-16.png" sizes="16x16" type="image/png">
   <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
-  <link rel="preload" href="../assets/fonts/alfa-slab-one.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/tokens.css">
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/layout.css">
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/pages.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body data-root="../" data-area="admin" data-page="dashboard">
   <div data-slot="header"></div>
-  <main id="main">
-    <div class="container admin-layout">
-      <div data-slot="admin-nav"></div>
-      <div id="admin-content"></div>
-    </div>
+  <main id="main" class="console-main">
+    <div id="admin-content" class="console-content"></div>
   </main>
-  <div data-slot="footer"></div>
   <script type="module" src="../assets/js/pages/admin-dashboard.js"></script>
 </body>
 </html>
