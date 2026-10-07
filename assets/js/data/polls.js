@@ -136,6 +136,11 @@ export function nextVoteWindow(poll, now = Date.now()) {
   return tomorrow.getTime() < poll.closesAt ? tomorrow.getTime() : null;
 }
 
+export function refusalMessage(poll, reason) {
+  const message = VOTE_REFUSAL[reason];
+  return reason === "limit" && nextVoteWindow(poll) ? `${message} Podrás votar de nuevo mañana.` : message;
+}
+
 export function evaluateVote(poll, optionId, user) {
   const status = pollStatus(poll);
   if (status === POLL_STATUS.closed) return { ok: false, reason: "closed" };

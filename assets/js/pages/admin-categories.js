@@ -4,7 +4,7 @@ import { confirmDialog, formDialog } from "../ui/forms.js";
 import { formatIsoRange } from "../ui/format.js";
 import { adminHeading } from "../ui/tables.js";
 import { getState } from "../data/storage.js";
-import { currentEdition, listCategories, listPolls } from "../data/polls.js";
+import { currentEdition, listCategories, listPolls, pollStatus, POLL_STATUS } from "../data/polls.js";
 import {
   saveEdition, setCurrentEdition, saveCategory, toggleCategory, moveCategory, deleteCategory,
 } from "../data/admin.js";
@@ -47,6 +47,22 @@ async function openCategoryForm(category) {
     showToast(category ? "Categoría actualizada." : "Categoría creada.");
     render();
   }
+}
+
+async function switchCategory(category) {
+  const openPolls = listPolls({ categoryId: category.id, includeDrafts: true }).filter((poll) => pollStatus(poll) === POLL_STATUS.open);
+  if (category.active && openPolls.length > 0) {
+    const confirmed = await confirmDialog({
+      title: "Desactivar categoría",
+      message: `La categoría "${category.name}" tiene ${openPolls.length === 1 ? "1 votación abierta" : `${openPolls.length} votaciones abiertas`}. Si la desactivas, dejará de mostrarse al público y nadie podrá votar en ella hasta que la vuelvas a activar.`,
+      confirmLabel: "Desactivar categoría",
+      danger: true,
+    });
+    if (!confirmed) return;
+  }
+  toggleCategory(category.id, actor);
+  showToast(category.active ? "Categoría activada." : "Categoría desactivada.");
+  render();
 }
 
 async function removeCategory(category) {
@@ -140,7 +156,7 @@ function categoryRow(category, index, total) {
       el("button", { class: "button button--outline button--small", type: "button", disabled: index === 0, "aria-label": `Subir ${category.name}`, onclick: () => { moveCategory(category.id, -1); render(); } }, "Subir"),
       el("button", { class: "button button--outline button--small", type: "button", disabled: index === total - 1, "aria-label": `Bajar ${category.name}`, onclick: () => { moveCategory(category.id, 1); render(); } }, "Bajar"),
       el("button", { class: "button button--outline button--small", type: "button", onclick: () => openCategoryForm(category) }, "Editar"),
-      el("button", { class: "button button--outline button--small", type: "button", onclick: () => { toggleCategory(category.id, actor); render(); } }, category.active ? "Desactivar" : "Activar"),
+      el("button", { class: "button button--outline button--small", type: "button", onclick: () => switchCategory(category) }, category.active ? "Desactivar" : "Activar"),
       el("button", { class: "button button--danger button--small", type: "button", "aria-label": `Eliminar ${category.name}`, onclick: () => removeCategory(category) }, "Eliminar"),
     ),
   );

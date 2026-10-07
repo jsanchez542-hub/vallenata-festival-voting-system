@@ -3,7 +3,7 @@ import { el, mount, notice } from "../ui/dom.js";
 import { pageParams } from "../ui/forms.js";
 import { flowBanner, pollTrail } from "../ui/poll-views.js";
 import {
-  getPoll, listOptions, evaluateVote, castVote, voteAllowance, VOTE_REFUSAL, PERIOD_LABEL,
+  getPoll, listOptions, evaluateVote, castVote, voteAllowance, refusalMessage, PERIOD_LABEL,
 } from "../data/polls.js";
 
 const SIMULATED_LATENCY_MS = 600;
@@ -23,7 +23,7 @@ function renderRefusal(reason) {
       : el("a", { class: "button button--outline", href: `poll.html?id=${poll.id}` }, "Volver a la votación");
   mount(
     document.querySelector("#confirm-content"),
-    el("div", { class: "container container--narrow section stack" }, notice("danger", el("p", {}, VOTE_REFUSAL[reason])), action),
+    el("div", { class: "container container--narrow section stack" }, notice("danger", el("p", {}, refusalMessage(poll, reason))), action),
   );
 }
 
@@ -44,7 +44,7 @@ function renderConfirmation(user) {
       }
       confirmButton.classList.remove("is-busy");
       confirmButton.disabled = false;
-      mount(alertSlot, notice("danger", el("p", {}, VOTE_REFUSAL[result.reason])));
+      mount(alertSlot, notice("danger", el("p", {}, refusalMessage(poll, result.reason))));
     }, SIMULATED_LATENCY_MS);
   });
 
