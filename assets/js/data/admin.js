@@ -190,6 +190,8 @@ export function saveOption(input, actor) {
 
   const option = existing ?? { id: newId("option"), pollId: input.pollId, order: siblings.length + 1 };
   Object.assign(option, { name, description: input.description.trim(), detail: input.detail.trim() });
+  if (input.image) option.image = input.image;
+  else if (input.removeImage) option.image = "";
   if (!existing) options.push(option);
   const poll = getPoll(input.pollId);
   logAudit(actor.name, existing ? "Editó una opción de" : "Agregó una opción a", poll?.title ?? "Votación");

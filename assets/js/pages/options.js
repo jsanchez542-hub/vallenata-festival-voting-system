@@ -1,9 +1,9 @@
 import { boot, renderBreadcrumb } from "../ui/chrome.js";
 import { el, mount, notice } from "../ui/dom.js";
 import { pageParams } from "../ui/forms.js";
-import { flowBanner, pollTrail } from "../ui/poll-views.js";
+import { flowBanner, optionThumbnail, pollTrail } from "../ui/poll-views.js";
 import {
-  getPoll, listOptions, evaluateVote, voteAllowance, VOTE_REFUSAL,
+  getPoll, listOptions, evaluateVote, voteAllowance, refusalMessage,
 } from "../data/polls.js";
 
 const context = boot();
@@ -18,7 +18,7 @@ function renderRefusal(reason) {
       : el("a", { class: "button button--outline", href: `poll.html?id=${poll.id}` }, "Volver a la votación");
   mount(
     document.querySelector("#options-content"),
-    el("div", { class: "container container--narrow section stack" }, notice("warning", el("p", {}, VOTE_REFUSAL[reason])), action),
+    el("div", { class: "container container--narrow section stack" }, notice("warning", el("p", {}, refusalMessage(poll, reason))), action),
   );
 }
 
@@ -30,6 +30,7 @@ function choice(option, index, checked) {
     el(
       "span",
       { class: "choice__body" },
+      optionThumbnail(option),
       el(
         "span",
         { class: "choice__text" },

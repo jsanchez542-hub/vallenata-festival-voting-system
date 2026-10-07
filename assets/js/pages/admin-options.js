@@ -1,7 +1,8 @@
 import { boot } from "../ui/chrome.js";
 import { el, mount, showToast, notice } from "../ui/dom.js";
 import { confirmDialog, formDialog, pageParams } from "../ui/forms.js";
-import { statusBadge } from "../ui/poll-views.js";
+import { IMAGE_ACCEPT, prepareOptionImage } from "../ui/images.js";
+import { optionThumbnail, statusBadge } from "../ui/poll-views.js";
 import { adminHeading, pollSelector } from "../ui/tables.js";
 import { getPoll, listOptions, listPolls, pollStatus } from "../data/polls.js";
 import { saveOption, deleteOption, moveOption, pollHasVotes } from "../data/admin.js";
@@ -21,8 +22,26 @@ async function openOptionForm(poll, option) {
       { id: "option-name", name: "name", label: "Nombre", value: option?.name ?? "" },
       { id: "option-detail", name: "detail", label: "Dato corto", required: false, value: option?.detail ?? "", hint: "Por ejemplo, el aire musical o la agrupación." },
       { id: "option-description", name: "description", label: "Descripción", type: "textarea", required: false, value: option?.description ?? "" },
-    ],
-    onSubmit: (values) => saveOption({ ...values, id: option?.id, pollId: poll.id }, actor),
+      {
+        id: "option-image",
+        name: "image",
+        label: "Imagen (opcional)",
+        type: "file",
+        accept: IMAGE_ACCEPT,
+        required: false,
+        hint: option?.image ? "JPG, PNG o WebP de hasta 2 MB. Si no eliges otra, se conserva la actual." : "JPG, PNG o WebP de hasta 2 MB.",
+      },
+      option?.image ? { id: "option-remove-image", name: "removeImage", label: "Quitar la imagen actual", type: "checkbox", value: false } : null,
+    ].filter(Boolean),
+    onSubmit: async (values) => {
+      let image = "";
+      if (values.image) {
+        const prepared = await prepareOptionImage(values.image);
+        if (!prepared.ok) return { ok: false, errors: { image: prepared.error } };
+        image = prepared.dataUrl;
+      }
+      return saveOption({ ...values, image, id: option?.id, pollId: poll.id }, actor);
+    },
   });
   if (saved) {
     showToast(option ? "Opción actualizada." : "Opción agregada.");
@@ -50,6 +69,7 @@ function optionRow(poll, option, index, total) {
     el(
       "div",
       { class: "options-admin-list__lead" },
+      optionThumbnail(option),
       el(
         "div",
         { class: "stack stack--tight" },

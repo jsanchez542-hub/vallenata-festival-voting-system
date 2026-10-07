@@ -5,7 +5,7 @@ function describedBy(id, hasHint) {
 }
 
 function buildControl(definition) {
-  const { id, name, type = "text", value = "", options, required = true, autocomplete, rows, min, max, step, disabled } = definition;
+  const { id, name, type = "text", value = "", options, required = true, autocomplete, rows, min, max, step, disabled, accept } = definition;
   const base = { id, name, "aria-describedby": describedBy(id, Boolean(definition.hint)) };
 
   if (type === "select") {
@@ -17,6 +17,9 @@ function buildControl(definition) {
   }
   if (type === "textarea") {
     return el("textarea", { ...base, class: "input", rows: rows ?? 3, required, disabled }, value);
+  }
+  if (type === "file") {
+    return el("input", { ...base, class: "input", type, accept, required, disabled });
   }
   return el("input", { ...base, class: "input", type, value, required, autocomplete, min, max, step, disabled });
 }
@@ -60,7 +63,9 @@ export function readForm(form) {
   const values = {};
   for (const control of form.elements) {
     if (!control.name) continue;
-    values[control.name] = control.type === "checkbox" ? control.checked : control.value;
+    if (control.type === "checkbox") values[control.name] = control.checked;
+    else if (control.type === "file") values[control.name] = control.files[0] ?? null;
+    else values[control.name] = control.value;
   }
   return values;
 }
@@ -107,10 +112,10 @@ export function formDialog({ title, description, submitLabel = "Guardar", fields
       ),
     );
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearErrors(form);
-      const result = onSubmit(readForm(form));
+      const result = await onSubmit(readForm(form));
       if (result.ok) {
         saved = result.value ?? true;
         dialog.close();
