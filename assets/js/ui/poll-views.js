@@ -47,6 +47,11 @@ export function flowBanner(poll, { step }) {
   );
 }
 
+export function optionThumbnail(option) {
+  if (!option.image) return null;
+  return el("img", { class: "option-thumb", src: option.image, alt: `Imagen de ${option.name}`, width: "72", height: "72", loading: "lazy" });
+}
+
 export function statusBadge(status) {
   return el("span", { class: `status status--${status}` }, STATUS_LABEL[status]);
 }

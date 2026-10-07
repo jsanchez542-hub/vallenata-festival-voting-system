@@ -2,7 +2,7 @@ import { boot, renderBreadcrumb } from "../ui/chrome.js";
 import { el, mount, notice } from "../ui/dom.js";
 import { pageParams } from "../ui/forms.js";
 import { formatDateTime } from "../ui/format.js";
-import { pollTrail, statusBadge, windowSummary } from "../ui/poll-views.js";
+import { optionThumbnail, pollTrail, statusBadge, windowSummary } from "../ui/poll-views.js";
 import {
   getPoll, getCategory, listOptions, pollStatus, canViewResults, voterIdentity, voteAllowance, nextVoteWindow,
   PERIOD_LABEL, VISIBILITY_LABEL, POLL_STATUS,
@@ -131,7 +131,12 @@ function renderPoll(poll, user) {
             el(
               "li",
               { class: "row-list__item" },
-              el("div", { class: "stack stack--tight" }, el("p", { class: "row-list__title" }, option.name), option.detail ? el("p", { class: "field__hint" }, option.detail) : null),
+              el(
+                "div",
+                { class: "option-summary" },
+                optionThumbnail(option),
+                el("div", { class: "stack stack--tight" }, el("p", { class: "row-list__title" }, option.name), option.detail ? el("p", { class: "field__hint" }, option.detail) : null),
+              ),
             ),
           ),
         ),
