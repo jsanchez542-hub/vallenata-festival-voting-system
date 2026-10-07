@@ -9,7 +9,7 @@ const params = pageParams();
 const next = safeNextPath(params.get("next"));
 
 if (context?.user && params.get("reason") !== "admin") {
-  location.replace(next ?? "polls.html");
+  location.replace(next ?? "categories.html");
 }
 
 const form = document.querySelector("#sign-in-form");
@@ -19,21 +19,27 @@ if (params.get("reason") === "admin") {
   mount(alertSlot, notice("warning", "Esta sección es solo para administración. Ingresa con una cuenta de administración para continuar."));
 }
 
+if (params.get("registered")) {
+  form.elements.email.value = params.get("registered");
+  mount(alertSlot, notice("success", "Cuenta creada. Ingresa con tu correo y tu contraseña para votar."));
+}
+
 function enter(user) {
   const isAdmin = user.role === "admin";
-  const fallback = isAdmin ? "admin/dashboard.html" : "polls.html?status=open";
+  const fallback = isAdmin ? "admin/dashboard.html" : "categories.html";
   const canFollowNext = next && (isAdmin || !next.startsWith("admin/"));
   location.assign(canFollowNext ? next : fallback);
 }
 
 document.querySelectorAll("[data-demo-account]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const result = signIn(button.dataset.email, button.dataset.password);
+  button.addEventListener("click", async () => {
+    const result = await signIn(button.dataset.email, button.dataset.password);
     if (result.ok) enter(result.user);
+    else mount(alertSlot, notice("danger", result.error));
   });
 });
 
-form?.addEventListener("submit", (event) => {
+form?.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearErrors(form);
   const { email, password } = readForm(form);
@@ -44,7 +50,7 @@ form?.addEventListener("submit", (event) => {
     showErrors(form, errors);
     return;
   }
-  const result = signIn(email, password);
+  const result = await signIn(email, password);
   if (!result.ok) {
     mount(alertSlot, notice("danger", result.error));
     return;
