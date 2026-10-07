@@ -15,7 +15,7 @@ This is an academic prototype. It is not an official site of the Fundación Fest
 The voter journey, on mobile first:
 
 1. Browse the current edition, its categories and the polls (open, upcoming, closed).
-2. Create an account or sign in.
+2. Create an account, accepting the personal data policy, or sign in.
 3. Read the rules of a poll, choose an option, confirm the vote and receive a receipt code.
 4. See results when the poll allows it.
 
@@ -23,7 +23,7 @@ The administration area:
 
 - Editions and categories.
 - Polls: dates, publication and rules.
-- Options: add, edit, reorder and remove.
+- Options: add, edit, reorder and remove, with an optional image that is validated and resized in the browser.
 - Results: totals, vote log, vote voiding and CSV export.
 
 ## The core idea: a configurable platform
@@ -37,7 +37,7 @@ The client has not defined most voting rules yet, so nothing is hard coded to a 
 | Results visibility | Organization only, after close, or live |
 | Registration | Required or not |
 
-Two of the sample polls use different rules on purpose, so the difference is visible in the interface. Publishing a poll requires at least two options and a closing date after the opening date, and an option that already has votes cannot be renamed or removed.
+Two of the sample polls use different rules on purpose, so the difference is visible in the interface. Security rules from the analysis are applied too: passwords are stored as salted SHA-256 hashes, sign-in locks for two minutes after five failed attempts, administration pages require an administrator session, a confirmed vote cannot be changed and every administrative action is written to an audit log. Publishing a poll requires at least two options and a closing date after the opening date, and an option that already has votes cannot be renamed or removed.
 
 ## Design
 
@@ -125,7 +125,7 @@ docs/         Screenshots
 ## Limitations
 
 - State lives in the browser (`localStorage`), so data is per device and sample data resets after 14 days.
-- Passwords are stored in plain text because there is no server. A real implementation hashes them.
+- Password hashing and the sign-in lock run in the browser because there is no server. The Django implementation will rely on its own password hashers and server-side rate limiting.
 - Rules, categories and polls are examples. The open questions for the client are tracked in the project analysis document.
 
 ## Credits
