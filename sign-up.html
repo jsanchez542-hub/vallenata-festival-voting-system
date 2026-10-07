@@ -45,6 +45,17 @@
           <p class="field__hint" id="password-hint">Mínimo 8 caracteres.</p>
           <p class="field__error" id="password-error" hidden></p>
         </div>
+        <details class="privacy-note">
+          <summary>Tratamiento de datos personales</summary>
+          <p>Usamos tu nombre y tu correo solo para identificarte como votante y evitar votos repetidos, según la Ley 1581 de 2012. La política definitiva la establecerá la Fundación (pendiente de validación). En este prototipo los datos se guardan únicamente en tu navegador.</p>
+        </details>
+        <div class="field" data-field="privacy">
+          <label class="check">
+            <input id="privacy" name="privacy" type="checkbox" required aria-describedby="privacy-error">
+            <span>Acepto el tratamiento de mis datos personales</span>
+          </label>
+          <p class="field__error" id="privacy-error" hidden></p>
+        </div>
         <div class="form-actions">
           <button class="button" type="submit">Crear cuenta</button>
         </div>

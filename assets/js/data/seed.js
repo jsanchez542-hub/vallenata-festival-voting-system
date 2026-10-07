@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 const HOUR_MS = 3600000;
 const DAY_MS = 24 * HOUR_MS;
@@ -132,8 +132,28 @@ export function buildSeed(now) {
     );
 
   const users = [
-    { id: "user-voter", name: "Votante de ejemplo", email: "votante@ejemplo.co", password: "Votante2027", role: "voter", active: true, createdAt: now - 20 * DAY_MS },
-    { id: "user-admin", name: "Administración de ejemplo", email: "admin@ejemplo.co", password: "Admin2027", role: "admin", active: true, createdAt: now - 30 * DAY_MS },
+    {
+      id: "user-voter",
+      name: "Votante de ejemplo",
+      email: "votante@ejemplo.co",
+      passwordSalt: "fvl-voter-7c21",
+      passwordHash: "57d30e48ac40720eb64fda68e5a867cf38d286e8b8c7bfe94767bd2a59bd219d",
+      role: "voter",
+      active: true,
+      createdAt: now - 20 * DAY_MS,
+      privacyAcceptedAt: now - 20 * DAY_MS,
+    },
+    {
+      id: "user-admin",
+      name: "Administración de ejemplo",
+      email: "admin@ejemplo.co",
+      passwordSalt: "fvl-admin-3e94",
+      passwordHash: "6f09bad439b4adf7c709e720c4e4743f42a05a68c6ec622142614b87a723bdd6",
+      role: "admin",
+      active: true,
+      createdAt: now - 30 * DAY_MS,
+      privacyAcceptedAt: now - 30 * DAY_MS,
+    },
   ];
 
   const audit = [
