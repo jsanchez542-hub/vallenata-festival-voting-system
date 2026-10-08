@@ -101,9 +101,8 @@ function buildHeader({ user, root, page }) {
       el(
         "div",
         { class: "container" },
-        "Prototipo académico desarrollado por ",
-        el("strong", {}, "Migue Studio"),
-        ". Datos de ejemplo.",
+        el("strong", {}, "Proyecto académico en equipo"),
+        " del curso Desarrollo Web, Areandina. Datos de ejemplo.",
       ),
     ),
     el(
@@ -177,7 +176,7 @@ function buildConsole({ user, root, page }) {
         },
         "Cerrar sesión",
       ),
-      el("p", { class: "console-note" }, "Prototipo académico de ", el("strong", {}, "Migue Studio"), ". Datos de ejemplo."),
+      el("p", { class: "console-note" }, "Proyecto académico en equipo, Desarrollo Web, Areandina. Datos de ejemplo."),
     ),
   );
 
@@ -260,7 +259,7 @@ function buildFooter(root) {
     el(
       "div",
       { class: "site-footer__bottom" },
-      el("div", { class: "container" }, "2026. Diseño y desarrollo: ", el("strong", {}, "Migue Studio")),
+      el("div", { class: "container" }, "2026. Proyecto académico en equipo, grupo ", el("span", { class: "nowrap" }, "202660-6A-62"), "."),
     ),
   );
 }

@@ -4,7 +4,7 @@ Interactive front-end prototype of a configurable public voting platform for the
 
 **Live demo:** https://jsanchez542-hub.github.io/vallenata-festival-voting-system/
 
-It was built as the design deliverable of a university team project (Web Development, Fundación Universitaria del Área Andina). The brief was to analyze and design the platform before building it, so this prototype validates the flows and the interface, not the backend. The target stack for the real system is Django and MySQL.
+It is part of a university team project for the Web Development course at Fundación Universitaria del Área Andina (first deliverable: analysis, design and prototype). The team wrote the analysis and design document together, and this prototype is its interactive counterpart. The brief was to analyze and design the platform before building it, so this prototype validates the flows and the interface, not the backend. The target stack for the real system is Django and MySQL.
 
 This is an academic prototype. It is not an official site of the Fundación Festival de la Leyenda Vallenata, and all categories, polls and rules shown are sample data pending validation with the client.
 
@@ -128,8 +128,10 @@ docs/         Screenshots
 - Password hashing and the sign-in lock run in the browser because there is no server. The Django implementation will rely on its own password hashers and server-side rate limiting.
 - Rules, categories and polls are examples. The open questions for the client are tracked in the project analysis document.
 
-## Credits
+## Team and credits
 
-Design and development: Miguel Sanchez Torres.
+Team project, Web Development course (group 202660-6A-62), Fundación Universitaria del Área Andina, 2026. The analysis and design document is the shared work of the team.
+
+Prototype design and development, as the team's UX/UI and prototype lead: Miguel Sanchez Torres.
 
 Fonts: Alfa Slab One and Archivo, both under the SIL Open Font License.
