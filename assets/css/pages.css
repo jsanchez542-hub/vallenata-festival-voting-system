@@ -112,7 +112,7 @@
 .section-heading a {
   font-weight: 800;
   font-stretch: 88%;
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
 }
 
 .band-stage {
@@ -134,7 +134,7 @@
 
 .band-stage .steps__item {
   padding-top: var(--space-5);
-  border-top: 4px solid var(--color-accent-bright);
+  border-top: 4px solid var(--color-primary);
 }
 
 .band-stage .steps__item::before {
@@ -150,7 +150,7 @@
 }
 
 .band-muted .section-heading h2 {
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
 }
 
 .category-index {
@@ -168,7 +168,7 @@
 }
 
 .category-index__link:hover .category-index__name {
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
 }
 
 .category-index__name {
@@ -184,7 +184,7 @@
 .category-index__count {
   font-weight: 800;
   font-stretch: 88%;
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
 }
 
 .auth-form {
@@ -209,7 +209,7 @@
 
 .demo-access__title {
   font-size: var(--text-xl);
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
 }
 
 .demo-access__accounts {
@@ -244,7 +244,7 @@
   display: flex;
   align-items: center;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
   cursor: pointer;
 }
 
@@ -283,7 +283,7 @@
 .flow-progress__item[aria-current="step"] {
   background: #ffffff;
   border-color: #ffffff;
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
 }
 
 .rule-list {

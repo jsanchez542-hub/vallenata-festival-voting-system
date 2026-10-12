@@ -58,7 +58,7 @@
 }
 
 .breadcrumb a {
-  color: var(--color-primary);
+  color: var(--color-primary-deep);
   text-decoration: none;
 }
 
