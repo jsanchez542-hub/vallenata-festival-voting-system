@@ -1,16 +1,31 @@
 @font-face {
-  font-family: "Alfa Slab One";
-  src: url("../fonts/alfa-slab-one.woff2") format("woff2");
+  font-family: "Raleway";
+  src: url("../fonts/raleway-var.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../fonts/poppins-400.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Archivo";
-  src: url("../fonts/archivo-var.woff2") format("woff2");
-  font-weight: 400 900;
-  font-stretch: 62% 125%;
+  font-family: "Poppins";
+  src: url("../fonts/poppins-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("../fonts/poppins-700.woff2") format("woff2");
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -48,12 +63,12 @@
   --color-info: #333333;
   --color-info-bg: #f1f1f1;
 
-  --font-display: "Alfa Slab One", Rockwell, "Courier New", serif;
-  --font-body: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Raleway", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Poppins", "Segoe UI", system-ui, sans-serif;
 
   --text-xs: 0.875rem;
-  --text-sm: 1rem;
-  --text-md: 1.125rem;
+  --text-sm: 0.9375rem;
+  --text-md: 1.0625rem;
   --text-lead: clamp(1.15rem, 1.05rem + 0.5vw, 1.4rem);
   --text-lg: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
   --text-xl: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
@@ -69,7 +84,9 @@
   --space-7: clamp(3rem, 2rem + 3vw, 4.5rem);
   --space-8: clamp(4rem, 2.5rem + 5vw, 7rem);
 
-  --radius-sm: 0.2rem;
+  --radius-panel: 0.25rem;
+  --radius-control: 0.625rem;
+  --radius-pill: 62rem;
 
   --container: 120rem;
   --container-narrow: 46rem;

@@ -41,10 +41,10 @@ Two of the sample polls use different rules on purpose, so the difference is vis
 
 ## Design
 
-The layout follows the editorial style of Colombia's official tourism pages: a dark navigation bar over a full-width photo banner, a light grey breadcrumb band under every banner, wide white content areas, a grey band for related content and a black footer closed by a dark grey credits band. The palette comes from the Festival's own website, measured in the browser: black and white as the base, red (#DD3333) as the only accent for primary actions, links and the logo, and neutral greys. The administration console stays in the same family, with a black sidebar and black buttons and red kept for active markers and key figures. No official logos or country branding are used. The home page opens with the edition number set large in Festival red beside the Festival's name and dates, the way the official poster presents each edition, over a full-width photo of an accordionist that fades into black where the text begins. The voting steps sit over a darkened photo of a jury panel, and navigation links fill with red on hover and on the current page.
+The layout follows the editorial style of Colombia's official tourism pages: a dark navigation bar over a full-width photo banner, a light grey breadcrumb band under every banner, wide white content areas, a grey band for related content and a black footer closed by a dark grey credits band. The palette comes from the Festival's own website, measured in the browser: black and white as the base, red (#DD3333) as the only accent for primary actions, links and the logo, and neutral greys. The administration console stays in the same family, with a black sidebar and black buttons and red kept for active markers and key figures. Buttons and fields take the reference's rounded corners and status labels its pill shape. No official logos or country branding are used. The home page opens with the edition number set large in Festival red beside the Festival's name and dates, the way the official poster presents each edition, over a full-width photo of an accordionist that fades into black where the text begins. The voting steps sit over a darkened photo of a jury panel, and navigation links fill with red on hover and on the current page.
 
-- Logo: four vertical bars of alternating height, one for each vallenato rhythm (paseo, merengue, son and puya), which also read as a results chart. Built as outlined SVG from the site's own typefaces, with light, dark, white and black versions, favicon, touch icon and a social preview card.
-- Typography: Alfa Slab One, a wood-type poster slab, for display, and Archivo with its condensed widths for the interface, both self-hosted.
+- Logo: four vertical bars of alternating height, one for each vallenato rhythm (paseo, merengue, son and puya), which also read as a results chart. Lettered in Alfa Slab One and Archivo and converted to outlined SVG, so it needs no font files, with light, dark, white and black versions, favicon, touch icon and a social preview card.
+- Typography: the Festival website's own families, Raleway in heavy weights for headings and Poppins for text and interface, both self-hosted. Compared with the reference, body text is set at 17 px instead of 14 px, headings use sentence case instead of capitals, and Raleway's lining figures are switched on so dates, counts and the edition number sit evenly.
 - Mobile first from 320 px up, with generous spacing, a single left alignment and touch targets of at least 44 px.
 - Light surfaces for reading and forms, dark surfaces for orientation.
 - Sentence-case copy written for voters, with explicit error and empty states.
@@ -54,7 +54,7 @@ The layout follows the editorial style of Colombia's official tourism pages: a d
 ## Quality checks
 
 - Automated accessibility audit with axe-core (WCAG 2.1 A and AA plus best practices): 0 violations across 36 views, covering 18 pages and states on mobile and desktop.
-- Text over both photos measured against the brightest background pixel behind each line, from 360 to 1920 px: at least 8:1 for white text on the hero, 13:1 on the voting steps, and 3.4:1 for the red edition number, which is large display text (WCAG asks for 3:1).
+- Text over both photos measured against the brightest background pixel behind each line, from 360 to 1920 px: at least 9:1 for white text on the hero, 13:1 on the voting steps, and 3.4:1 for the red edition number, which is large display text (WCAG asks for 3:1).
 - No horizontal overflow from 320 to 1440 px.
 - Valid HTML on all 15 pages (html-validate, recommended rules).
 - No broken links or failed requests across every page and asset.
@@ -111,7 +111,7 @@ The sign-in page has one-click buttons for both accounts, and every page links t
 ```
 assets/
   css/        Design tokens, base, layout, components, page styles and admin console
-  fonts/      Self-hosted fonts
+  fonts/      Self-hosted fonts and their licenses
   img/        Photos, favicons and social preview card
     brand/    Logo and symbol in every color version
   js/
@@ -134,4 +134,4 @@ Team project, Web Development course (group 202660-6A-62), Fundación Universita
 
 Prototype design and development, as the team's UX/UI and prototype lead: Miguel Sanchez Torres.
 
-Fonts: Alfa Slab One and Archivo, both under the SIL Open Font License.
+Fonts: Raleway and Poppins, both under the SIL Open Font License, with their license texts in `assets/fonts`. The logo lettering comes from Alfa Slab One and Archivo, also under the SIL Open Font License.
