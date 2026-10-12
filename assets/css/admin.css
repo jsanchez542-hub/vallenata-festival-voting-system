@@ -1,6 +1,6 @@
 body[data-area="admin"] {
-  --color-primary: #111111;
-  --color-primary-deep: #000000;
+  --color-primary: #000000;
+  --color-primary-deep: #383838;
   --color-paper: #ececec;
   --font-display: var(--font-body);
   --text-md: 1rem;
@@ -75,6 +75,11 @@ body[data-area="admin"] .input {
   transform: none;
   visibility: visible;
   transition: transform 220ms var(--ease-out), visibility 0s;
+}
+
+.console-sidebar :focus-visible,
+.console-topbar :focus-visible {
+  outline-color: var(--color-accent-light);
 }
 
 .console-brand {

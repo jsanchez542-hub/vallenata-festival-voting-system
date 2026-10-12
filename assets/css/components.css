@@ -28,7 +28,9 @@
 }
 
 .button[disabled],
-.button[aria-disabled="true"] {
+.button[disabled]:hover,
+.button[aria-disabled="true"],
+.button[aria-disabled="true"]:hover {
   background: var(--color-closed-bg);
   border-color: var(--color-closed-bg);
   color: var(--color-muted);
@@ -70,6 +72,17 @@
   background: var(--color-danger);
   border-color: var(--color-danger);
   color: #ffffff;
+}
+
+.dialog .button--danger {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.dialog .button--danger:hover {
+  background: var(--color-danger-deep);
+  border-color: var(--color-danger-deep);
 }
 
 .button--small {
@@ -324,6 +337,10 @@ textarea.input {
   margin-bottom: var(--space-5);
 }
 
+.toolbar > nav {
+  flex: 1 1 20rem;
+}
+
 .toolbar .field {
   min-width: min(100%, 18rem);
 }
@@ -502,13 +519,14 @@ textarea.input {
   color: #ffffff;
   font-size: var(--text-sm);
   font-weight: 600;
-  border-left: 6px solid var(--color-accent);
+  border-left: 6px solid var(--color-brand);
   pointer-events: auto;
   animation: toast-in 220ms var(--ease-out);
 }
 
 .toast--danger {
-  border-left-color: var(--color-primary);
+  background: var(--color-danger);
+  border-left-color: var(--color-danger-deep);
 }
 
 @keyframes toast-in {
@@ -529,7 +547,7 @@ textarea.input {
 }
 
 .dialog::backdrop {
-  background: rgb(20 20 20 / 0.7);
+  background: rgb(0 0 0 / 0.7);
 }
 
 .dialog__body {
