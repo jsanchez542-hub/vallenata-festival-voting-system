@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @view-transition { navigation: auto; }
+    @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+  </style>
   <title>Resultados | Administración, Leyenda Vallenata</title>
   <meta name="description" content="Consulta los resultados de las votaciones.">
   <meta name="robots" content="noindex">
@@ -12,6 +16,7 @@
   <link rel="icon" href="../assets/img/favicon-16.png" sizes="16x16" type="image/png">
   <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/poppins-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/poppins-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/poppins-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../assets/css/tokens.css">
   <link rel="stylesheet" href="../assets/css/base.css">
@@ -25,6 +30,6 @@
   <main id="main" class="console-main">
     <div id="admin-content" class="console-content"></div>
   </main>
-  <script type="module" src="../assets/js/pages/admin-results.js"></script>
+  <script type="module" src="../assets/js/pages/admin-results.js" blocking="render"></script>
 </body>
 </html>

@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @view-transition { navigation: auto; }
+    @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+  </style>
   <title>Resultados | Festival de la Leyenda Vallenata</title>
   <meta name="description" content="Comprobante de tu voto y resultados de la votación.">
   <meta name="theme-color" content="#000000">
@@ -12,6 +16,8 @@
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/raleway-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/poppins-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
@@ -19,12 +25,17 @@
   <link rel="stylesheet" href="assets/css/pages.css">
 </head>
 <body data-root="./" data-area="public" data-page="polls">
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <aside class="prototype-ribbon" aria-label="Aviso sobre el prototipo">
+    <div class="container"><strong>Proyecto académico en equipo</strong> del curso Desarrollo Web, Areandina. Datos de ejemplo.</div>
+  </aside>
   <div data-slot="header"></div>
   <main id="main">
     <section class="page-banner on-stage" id="flow-banner" aria-label="Encabezado del resultado"></section>
+    <div class="breadcrumb-band" aria-hidden="true"></div>
     <div id="result-content"></div>
   </main>
   <div data-slot="footer"></div>
-  <script type="module" src="assets/js/pages/result.js"></script>
+  <script type="module" src="assets/js/pages/result.js" blocking="render"></script>
 </body>
 </html>
