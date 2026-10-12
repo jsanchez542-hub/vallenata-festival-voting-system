@@ -70,7 +70,7 @@ function ctaBlock(poll, status, user) {
   const resultsUrl = `result.html?id=${poll.id}`;
 
   if (status === POLL_STATUS.closed) {
-    return el("a", { class: "button", href: resultsUrl }, "Ver resultados");
+    return el("a", { class: "button button--block", href: resultsUrl }, "Ver resultados");
   }
   if (status === POLL_STATUS.upcoming) {
     return el("button", { class: "button button--block", type: "button", disabled: true }, windowSummary(poll));

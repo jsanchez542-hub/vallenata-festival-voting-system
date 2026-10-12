@@ -5,14 +5,23 @@ import { categoryRow, pollRow } from "../ui/poll-views.js";
 import { currentEdition, listCategories, listPolls, POLL_STATUS } from "../data/polls.js";
 
 const context = boot();
+const EDITION_NUMBER = /^(\d+)\s+(.+)$/;
 
 function renderEdition() {
   const edition = currentEdition();
   if (!edition) return;
+  const [, number, title] = edition.name.match(EDITION_NUMBER) ?? [null, null, edition.name];
   mount(
     document.querySelector("#edition-line"),
-    el("strong", {}, edition.name),
-    el("span", {}, `Valledupar, ${formatIsoRange(edition.startsOn, edition.endsOn)}`),
+    number ? el("span", { class: "hero__edition-number" }, number) : null,
+    " ",
+    el(
+      "span",
+      { class: "hero__edition-text" },
+      el("strong", {}, title),
+      " ",
+      el("span", {}, `Valledupar, ${formatIsoRange(edition.startsOn, edition.endsOn)}`),
+    ),
   );
 }
 

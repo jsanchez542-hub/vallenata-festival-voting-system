@@ -41,7 +41,7 @@ Two of the sample polls use different rules on purpose, so the difference is vis
 
 ## Design
 
-The layout follows the editorial style of Colombia's official tourism pages: a dark navigation bar over a full-width photo banner, a light grey breadcrumb band under every banner, wide white content areas, a grey band for related content and a two-level grey footer. The palette comes from the Festival's own website, measured in the browser: black and white as the base, red (#DD3333) as the only accent for primary actions, links and the logo, and neutral greys. The administration console stays in the same family, with a black sidebar and black buttons and red kept for active markers and key figures. No official logos or country branding are used. The home page opens with a full-width photo of an accordionist, the voting steps sit over a darkened photo of a jury panel, and navigation links fill with red on hover and on the current page.
+The layout follows the editorial style of Colombia's official tourism pages: a dark navigation bar over a full-width photo banner, a light grey breadcrumb band under every banner, wide white content areas, a grey band for related content and a black footer closed by a dark grey credits band. The palette comes from the Festival's own website, measured in the browser: black and white as the base, red (#DD3333) as the only accent for primary actions, links and the logo, and neutral greys. The administration console stays in the same family, with a black sidebar and black buttons and red kept for active markers and key figures. No official logos or country branding are used. The home page opens with the edition number set large in Festival red beside the Festival's name and dates, the way the official poster presents each edition, over a full-width photo of an accordionist that fades into black where the text begins. The voting steps sit over a darkened photo of a jury panel, and navigation links fill with red on hover and on the current page.
 
 - Logo: four vertical bars of alternating height, one for each vallenato rhythm (paseo, merengue, son and puya), which also read as a results chart. Built as outlined SVG from the site's own typefaces, with light, dark, white and black versions, favicon, touch icon and a social preview card.
 - Typography: Alfa Slab One, a wood-type poster slab, for display, and Archivo with its condensed widths for the interface, both self-hosted.
@@ -53,8 +53,8 @@ The layout follows the editorial style of Colombia's official tourism pages: a d
 
 ## Quality checks
 
-- Automated accessibility audit with axe-core (WCAG 2.1 A and AA plus best practices): 0 violations across 15 views on mobile and desktop.
-- Text over both photos measured against the brightest background pixel behind each line, at 390, 768, 1440 and 1920 px: at least 7:1 on the hero and 11:1 on the voting steps.
+- Automated accessibility audit with axe-core (WCAG 2.1 A and AA plus best practices): 0 violations across 36 views, covering 18 pages and states on mobile and desktop.
+- Text over both photos measured against the brightest background pixel behind each line, from 360 to 1920 px: at least 8:1 for white text on the hero, 13:1 on the voting steps, and 3.4:1 for the red edition number, which is large display text (WCAG asks for 3:1).
 - No horizontal overflow from 320 to 1440 px.
 - Valid HTML on all 15 pages (html-validate, recommended rules).
 - No broken links or failed requests across every page and asset.

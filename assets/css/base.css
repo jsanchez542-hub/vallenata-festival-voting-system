@@ -125,7 +125,10 @@ html:has(dialog[open]) {
   scrollbar-gutter: stable;
 }
 
-.on-stage :focus-visible {
+.on-stage :focus-visible,
+.prototype-ribbon :focus-visible,
+.site-header :focus-visible,
+.site-footer :focus-visible {
   outline-color: var(--color-accent-light);
 }
 

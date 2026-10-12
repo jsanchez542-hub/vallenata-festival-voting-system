@@ -67,7 +67,7 @@
 }
 
 .prototype-ribbon {
-  background: #000000;
+  background: var(--color-band);
   color: #ffffff;
   font-size: var(--text-xs);
   font-weight: 600;
@@ -135,6 +135,8 @@
   right: 0;
   background: var(--color-stage);
   border-top: 1px solid rgb(255 255 255 / 0.12);
+  border-bottom: 1px solid rgb(255 255 255 / 0.16);
+  box-shadow: 0 1.5rem 2rem rgb(0 0 0 / 0.55);
 }
 
 .site-nav:not([data-open="true"]) {
@@ -229,7 +231,7 @@
 }
 
 .site-footer__bottom {
-  background: var(--color-stage);
+  background: var(--color-band);
   font-size: var(--text-xs);
 }
 
@@ -259,6 +261,7 @@
       display: block;
       background: none;
       border: 0;
+      box-shadow: none;
     }
 
   .site-nav__list {
