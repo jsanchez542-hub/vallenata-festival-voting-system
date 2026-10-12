@@ -16,6 +16,14 @@ const ADMIN_LINKS = [
   { key: "results", label: "Resultados", href: "results.html" },
 ];
 
+// When the browser skips a page transition its promises reject; the navigation itself completes normally.
+const ignoreSkippedTransition = ({ viewTransition }) => {
+  if (!viewTransition) return;
+  [viewTransition.ready, viewTransition.updateCallbackDone, viewTransition.finished].forEach((step) => step.catch(() => {}));
+};
+addEventListener("pageswap", ignoreSkippedTransition);
+addEventListener("pagereveal", ignoreSkippedTransition);
+
 function navLink(link, root, activeKey) {
   return el(
     "li",
@@ -92,39 +100,24 @@ function buildHeader({ user, root, page }) {
   });
 
   return el(
-    "div",
-    {},
-    el("a", { class: "skip-link", href: "#main" }, "Saltar al contenido"),
+    "header",
+    { class: "site-header" },
     el(
-      "aside",
-      { class: "prototype-ribbon", "aria-label": "Aviso sobre el prototipo" },
+      "div",
+      { class: "container site-header__bar" },
       el(
-        "div",
-        { class: "container" },
-        el("strong", {}, "Proyecto académico en equipo"),
-        " del curso Desarrollo Web, Areandina. Datos de ejemplo.",
+        "a",
+        { class: "brand", href: `${root}index.html` },
+        el("img", {
+          class: "brand__logo",
+          src: `${root}assets/img/brand/logo-on-dark.svg`,
+          width: "371",
+          height: "62",
+          alt: "Leyenda Vallenata, votaciones del público. Ir al inicio",
+        }),
       ),
-    ),
-    el(
-      "header",
-      { class: "site-header" },
-      el(
-        "div",
-        { class: "container site-header__bar" },
-        el(
-          "a",
-          { class: "brand", href: `${root}index.html` },
-          el("img", {
-            class: "brand__logo",
-            src: `${root}assets/img/brand/logo-on-dark.svg`,
-            width: "371",
-            height: "62",
-            alt: "Leyenda Vallenata, votaciones del público. Ir al inicio",
-          }),
-        ),
-        toggle,
-        nav,
-      ),
+      toggle,
+      nav,
     ),
   );
 }

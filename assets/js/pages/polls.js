@@ -6,12 +6,9 @@ import { listCategories, listPolls, getCategory } from "../data/polls.js";
 
 const context = boot();
 
-const STATUS_FILTERS = [
-  { value: "", label: "Todas" },
-  { value: "open", label: "Abiertas" },
-  { value: "upcoming", label: "Próximas" },
-  { value: "closed", label: "Cerradas" },
-];
+const NO_FILTERS = { status: "", categoryId: "" };
+
+let current = NO_FILTERS;
 
 function filtersFromUrl() {
   const params = pageParams();
@@ -26,45 +23,66 @@ function buildHref({ status, categoryId }) {
   return query ? `polls.html?${query}` : "polls.html";
 }
 
-function renderFilters(filters) {
-  const statusNav = el(
-    "nav",
-    { "aria-label": "Filtrar por estado" },
-    el(
-      "div",
-      { class: "segmented" },
-      STATUS_FILTERS.map((item) =>
-        el(
-          "a",
-          {
-            class: "segmented__item",
-            href: buildHref({ ...filters, status: item.value }),
-            "aria-current": item.value === filters.status ? "true" : undefined,
-          },
-          item.label,
-        ),
-      ),
-    ),
-  );
+function isPlainClick(event) {
+  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+}
 
-  const select = el(
-    "select",
-    {
-      class: "input",
-      id: "category-filter",
-      onchange: (event) => location.assign(buildHref({ ...filters, categoryId: event.target.value })),
-    },
-    el("option", { value: "" }, "Todas las categorías"),
-    listCategories({ activeOnly: true }).map((category) =>
-      el("option", { value: category.id, selected: category.id === filters.categoryId }, category.name),
-    ),
-  );
+function withTransition(update) {
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (document.startViewTransition && !reduceMotion) {
+    const transition = document.startViewTransition(update);
+    transition.ready.catch(() => {});
+    return transition.updateCallbackDone;
+  }
+  update();
+  return Promise.resolve();
+}
 
-  mount(
-    document.querySelector("#poll-filters"),
-    statusNav,
-    el("div", { class: "field" }, el("label", { class: "field__label", for: "category-filter" }, "Categoría"), select),
-  );
+function applyFilters(filters, { push }) {
+  current = filters;
+  if (push) history.pushState(null, "", buildHref(filters));
+  return withTransition(() => {
+    syncFilters(filters);
+    renderContext(filters);
+    renderList(filters);
+  });
+}
+
+function enhanceFilters() {
+  document.querySelectorAll(".segmented__item").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (!isPlainClick(event)) return;
+      event.preventDefault();
+      const status = link.dataset.status;
+      if (status !== current.status) applyFilters({ ...current, status }, { push: true });
+    });
+  });
+
+  const select = document.querySelector("#category-filter");
+  select.append(...listCategories({ activeOnly: true }).map((category) => el("option", { value: category.id }, category.name)));
+  select.addEventListener("change", () => applyFilters({ ...current, categoryId: select.value }, { push: true }));
+}
+
+function syncFilters(filters) {
+  document.querySelectorAll(".segmented__item").forEach((link) => {
+    const status = link.dataset.status;
+    link.href = buildHref({ ...filters, status });
+    if (status === filters.status) link.setAttribute("aria-current", "true");
+    else link.removeAttribute("aria-current");
+  });
+  document.querySelector("#category-filter").value = filters.categoryId;
+}
+
+function renderContext(filters) {
+  const category = filters.categoryId ? getCategory(filters.categoryId) : null;
+  const lead = document.querySelector("#page-lead");
+  lead.textContent = category ? `Categoría: ${category.name}` : "";
+  lead.hidden = !category;
+  renderBreadcrumb([
+    { label: "Inicio", href: "index.html" },
+    { label: "Votaciones", href: "polls.html" },
+    ...(category ? [{ label: category.name }] : []),
+  ]);
 }
 
 function renderList(filters) {
@@ -84,7 +102,19 @@ function renderList(filters) {
           { class: "empty-state" },
           el("h3", {}, "No hay votaciones con estos filtros"),
           el("p", {}, "Prueba con otro estado o con todas las categorías."),
-          el("a", { class: "button button--outline", href: "polls.html" }, "Quitar filtros"),
+          el(
+            "a",
+            {
+              class: "button button--outline",
+              href: "polls.html",
+              onclick: (event) => {
+                if (!isPlainClick(event)) return;
+                event.preventDefault();
+                applyFilters(NO_FILTERS, { push: true }).then(() => document.querySelector(".segmented__item[aria-current]")?.focus());
+              },
+            },
+            "Quitar filtros",
+          ),
         ),
       ),
     );
@@ -94,18 +124,10 @@ function renderList(filters) {
 }
 
 if (context) {
-  const filters = filtersFromUrl();
-  const category = filters.categoryId ? getCategory(filters.categoryId) : null;
-  if (category) {
-    const lead = document.querySelector("#page-lead");
-    lead.textContent = `Categoría: ${category.name}`;
-    lead.hidden = false;
-  }
-  renderBreadcrumb([
-    { label: "Inicio", href: "index.html" },
-    { label: "Votaciones", href: "polls.html" },
-    ...(category ? [{ label: category.name }] : []),
-  ]);
-  renderFilters(filters);
-  renderList(filters);
+  current = filtersFromUrl();
+  enhanceFilters();
+  syncFilters(current);
+  renderContext(current);
+  renderList(current);
+  addEventListener("popstate", () => applyFilters(filtersFromUrl(), { push: false }));
 }

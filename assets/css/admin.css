@@ -53,6 +53,7 @@ body[data-area="admin"] .input {
 }
 
 .console-sidebar {
+  view-transition-name: console-sidebar;
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 60;
@@ -163,6 +164,7 @@ body[data-area="admin"] .input {
 }
 
 .console-topbar {
+  view-transition-name: console-topbar;
   position: sticky;
   top: 0;
   z-index: 40;
@@ -394,6 +396,12 @@ body[data-area="admin"] .input {
 
   html:has(.console-sidebar[data-open="true"]) {
     overflow: hidden;
+  }
+
+  body[data-area="admin"] [data-slot="header"] {
+    display: block;
+    min-height: 3.5rem;
+    background: var(--color-stage);
   }
 }
 
