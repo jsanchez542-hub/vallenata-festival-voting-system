@@ -19,7 +19,7 @@ The voter journey, on mobile first:
 3. Read the rules of a poll, choose an option, confirm the vote and receive a receipt code.
 4. See results when the poll allows it.
 
-The administration area is a separate console with its own layout (dark sidebar, denser cards and tables, its own stylesheet) so it does not read as part of the public site:
+The administration area:
 
 - Editions and categories.
 - Polls: dates, publication and rules.
@@ -41,28 +41,22 @@ Two of the sample polls use different rules on purpose, so the difference is vis
 
 ## Design
 
-The layout follows the editorial style of Colombia's official tourism pages: a transparent navigation bar laid over a full-width photo banner that turns solid black as the page scrolls, a light grey breadcrumb band under every banner, wide white content areas, a grey band for related content and a black footer closed by a dark grey credits band. The palette comes from the Festival's own website, measured in the browser: black and white as the base, red (#DD3333) as the only accent for primary actions, links and the logo, and neutral greys. The administration console stays in the same family, with a black sidebar and black buttons and red kept for active markers and key figures. Buttons and fields take the reference's rounded corners and status labels its pill shape. No official logos or country branding are used. The home page opens with the edition number set large in Festival red beside the Festival's name and dates, the way the official poster presents each edition, over a full-width photo of an accordionist that fades into black where the text begins. The voting steps sit over a darkened photo of a jury panel, and navigation links fill with red on hover and on the current page.
+The palette and typefaces come from the Festival's own website: black and white, the Festival red (#DD3333) as the only accent, Raleway for headings and Poppins for text, both self-hosted. The layout borrows its structure from Colombia's tourism pages: a transparent menu over a full-width photo, a grey breadcrumb band and wide white content. The home page sets the edition number large in red next to the Festival's name, as the official poster does.
 
-- Logo: four vertical bars of alternating height, one for each vallenato rhythm (paseo, merengue, son and puya), which also read as a results chart. Lettered in Alfa Slab One and Archivo and converted to outlined SVG, so it needs no font files, with light, dark, white and black versions, favicon, touch icon and a social preview card.
-- Typography: the Festival website's own families, Raleway in heavy weights for headings and Poppins for text and interface, both self-hosted. Compared with the reference, body text is set at 17 px instead of 14 px, headings use sentence case instead of capitals, and Raleway's lining figures are switched on so dates, counts and the edition number sit evenly.
-- Mobile first from 320 px up, with generous spacing, a single left alignment and touch targets of at least 44 px.
-- Light surfaces for reading and forms, dark surfaces for orientation.
-- Sentence-case copy written for voters, with explicit error and empty states.
+The administration area has its own console layout with a black sidebar, so it does not read as part of the public site.
+
+The logo is four bars of different heights, one for each vallenato rhythm (paseo, merengue, son and puya), which also read as a results chart. No official logos are used.
 
 ![Desktop home](docs/screenshots/home-desktop.jpg)
 
 ## Quality checks
 
-- Automated accessibility audit with axe-core (WCAG 2.1 A and AA plus best practices): 0 violations across 36 views, covering 18 pages and states on mobile and desktop.
-- Text over both photos measured against the brightest background pixel behind each line, from 360 to 1920 px: at least 9:1 for white text on the hero, 13:1 on the voting steps, and 3.4:1 for the red edition number, which is large display text (WCAG asks for 3:1).
-- No horizontal overflow from 320 to 1440 px.
-- No layout shift while pages load (cumulative layout shift 0.000 on every public and administration page, mobile and desktop): each page renders its header, breadcrumb and lists before its first paint, and space is reserved for anything that appears later.
-- Poll filters update the list in place, keeping the scroll position and the browser history, and page changes use the browser's cross-document view transitions, switched off when reduced motion is requested.
-- Valid HTML on all 15 pages (html-validate, recommended rules).
-- No broken links or failed requests across every page and asset.
-- ESLint passes with no errors (`npm run lint`).
-- Keyboard navigation, visible focus and reduced-motion support throughout.
-- No runtime dependencies, no build step and no external requests.
+- Accessibility audit with axe-core (WCAG 2.1 AA): no violations on mobile or desktop.
+- Contrast of the text over the photos checked from 360 to 1920 px wide.
+- No horizontal scroll from 320 px, and no layout shift while pages load.
+- Valid HTML (html-validate) and no ESLint errors (`npm run lint`).
+- Keyboard navigation, visible focus and reduced motion support.
+- No runtime dependencies and no build step.
 
 ## Screens
 
