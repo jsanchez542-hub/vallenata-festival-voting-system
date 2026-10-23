@@ -2,7 +2,7 @@
   "name": "vallenata-festival-voting-system",
   "version": "0.1.0",
   "private": true,
-  "description": "Interactive front-end prototype of a configurable public voting platform for the 60th Vallenata Legend Festival.",
+  "description": "Configurable public voting platform for the 60th Vallenata Legend Festival: front-end prototype and Django backend.",
   "type": "module",
   "scripts": {
     "start": "npx --yes serve . -l 8080",
