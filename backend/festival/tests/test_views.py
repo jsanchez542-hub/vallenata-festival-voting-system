@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -57,6 +58,18 @@ class PublicPagesTests(TestCase):
         self.assertLess(content.index("Canción A"), content.index("Canción B"))
         self.assertContains(response, "1 voto en total")
         self.assertContains(response, "Al cierre de la votación")
+
+    def test_anonymous_visitor_is_invited_to_sign_in_and_come_back(self):
+        response = self.client.get(self.song.get_absolute_url())
+        sign_in = reverse("accounts:sign-in")
+        self.assertContains(response, f'href="{sign_in}?next={self.song.get_absolute_url()}"')
+
+    def test_signed_in_visitor_is_told_that_voting_is_not_available_yet(self):
+        user = get_user_model().objects.create_user("votante@ejemplo.co", "vallenato-2027")
+        self.client.force_login(user)
+        response = self.client.get(self.song.get_absolute_url())
+        self.assertContains(response, "El registro de votos todavía no está habilitado")
+        self.assertNotContains(response, "Ingresar para votar")
 
     def test_drafts_and_polls_in_inactive_categories_are_not_found(self):
         for poll in (self.draft, self.hidden_poll):

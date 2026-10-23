@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+from django.contrib.messages import constants as message_levels
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
@@ -88,6 +89,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+LOGIN_URL = "accounts:sign-in"
+LOGIN_REDIRECT_URL = "festival:home"
+LOGOUT_REDIRECT_URL = "festival:home"
+
 LANGUAGE_CODE = "es-co"
 TIME_ZONE = "America/Bogota"
 USE_I18N = True
@@ -103,6 +108,8 @@ STATICFILES_DIRS = [
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MESSAGE_TAGS = {message_levels.ERROR: "danger"}
 
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG

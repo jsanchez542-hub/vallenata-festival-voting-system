@@ -44,7 +44,12 @@
       </section>
 
       <aside class="stack stack--roomy" aria-label="Votar y reglas">
-        {% if status == "open" %}
+        {% if status == "open" and poll.requires_account and not user.is_authenticated %}
+          <div class="stack">
+            <a class="button button--block" href="{% url 'accounts:sign-in' %}?next={{ request.path|urlencode }}">Ingresar para votar</a>
+            <a class="button button--outline button--block" href="{% url 'accounts:sign-up' %}?next={{ request.path|urlencode }}">Crear cuenta</a>
+          </div>
+        {% elif status == "open" %}
           <div class="notice">
             <p>El registro de votos todavía no está habilitado en esta versión. Por ahora puedes revisar las opciones y las reglas.</p>
           </div>

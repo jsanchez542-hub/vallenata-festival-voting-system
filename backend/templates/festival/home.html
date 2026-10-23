@@ -20,6 +20,9 @@
         <p class="hero__lead">Elige tu opción y confirma tu voto desde el celular, con las reglas de cada votación a la vista.</p>
         <div class="cluster hero__actions">
           <a class="button" href="{% url 'festival:poll-list' %}?status=open">Ver votaciones abiertas</a>
+          {% if not user.is_authenticated %}
+            <a class="button button--on-stage" href="{% url 'accounts:sign-up' %}">Crear cuenta</a>
+          {% endif %}
         </div>
       </div>
     </div>

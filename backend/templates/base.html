@@ -46,6 +46,20 @@
           <li><a class="site-nav__link" href="{% url 'festival:home' %}"{% if nav_section == "home" %} aria-current="page"{% endif %}>Inicio</a></li>
           <li><a class="site-nav__link" href="{% url 'festival:category-list' %}"{% if nav_section == "categories" %} aria-current="page"{% endif %}>Categorías</a></li>
           <li><a class="site-nav__link" href="{% url 'festival:poll-list' %}"{% if nav_section == "polls" %} aria-current="page"{% endif %}>Votaciones</a></li>
+          {% if user.is_authenticated %}
+            {% if user.is_staff %}
+              <li><a class="site-nav__link" href="{% url 'admin:index' %}">Administración</a></li>
+            {% endif %}
+            <li>
+              <form method="post" action="{% url 'accounts:sign-out' %}">
+                {% csrf_token %}
+                <button class="site-nav__button" type="submit">Salir ({{ user.display_name }})</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a class="site-nav__link" href="{% url 'accounts:sign-in' %}"{% if nav_section == "sign-in" %} aria-current="page"{% endif %}>Ingresar</a></li>
+            <li><a class="site-nav__link" href="{% url 'accounts:sign-up' %}"{% if nav_section == "sign-up" %} aria-current="page"{% endif %}>Crear cuenta</a></li>
+          {% endif %}
         </ul>
       </nav>
     </div>

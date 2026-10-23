@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Crear cuenta{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">Crear cuenta</h1>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}<li><span aria-current="page">Crear cuenta</span></li>{% endblock %}
+
+{% block content %}
+  <div class="container container--narrow auth-form">
+    {% if form.non_field_errors %}
+      <div class="notice notice--danger" role="alert">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+      </div>
+    {% endif %}
+    <form class="form-grid" method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}">
+      {% include "includes/field.html" with field=form.first_name %}
+      {% include "includes/field.html" with field=form.last_name %}
+      {% include "includes/field.html" with field=form.email %}
+      {% include "includes/field.html" with field=form.password1 %}
+      {% include "includes/field.html" with field=form.password2 %}
+      <details class="privacy-note">
+        <summary>Tratamiento de datos personales</summary>
+        <p>Usamos tu nombre y tu correo solo para identificarte como votante y evitar votos repetidos, según la Ley 1581 de 2012. La política definitiva la establecerá la Fundación (pendiente de validación). En esta versión académica los datos quedan en la base de datos del proyecto y se usan solo para pruebas.</p>
+      </details>
+      <div class="field">
+        <label class="check">
+          {{ form.privacy_accepted }}
+          <span>{{ form.privacy_accepted.label }}</span>
+        </label>
+        {% if form.privacy_accepted.errors %}<p class="field__error" id="{{ form.privacy_accepted.auto_id }}_error">{{ form.privacy_accepted.errors|join:" " }}</p>{% endif %}
+      </div>
+      <div class="form-actions">
+        <button class="button" type="submit">Crear cuenta</button>
+      </div>
+    </form>
+    <p class="auth-form__alt">¿Ya tienes cuenta? <a href="{% url 'accounts:sign-in' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Ingresar</a></p>
+  </div>
+{% endblock %}
