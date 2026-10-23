@@ -1,0 +1,16 @@
+{% load festival_display %}{% with status=poll.status %}
+<li class="row-list__item">
+  <div class="stack stack--tight">
+    <h3 class="row-list__title"><a href="{{ poll.get_absolute_url }}">{{ poll.title }}</a></h3>
+    <div class="row-list__meta">
+      <span class="status status--{{ status }}">{{ status.label }}</span>
+      <span class="meta-item">{{ poll.category.name }}</span>
+      <span class="meta-item">{{ poll|poll_window }}</span>
+      <span class="meta-item">{{ poll.option_count }} opci{{ poll.option_count|pluralize:"ón,ones" }}</span>
+    </div>
+  </div>
+  <a class="button{% if status != 'open' %} button--outline{% endif %} row-list__action" href="{{ poll.get_absolute_url }}">
+    {% if status == "open" %}Ver opciones{% else %}Ver detalle{% endif %}<span class="visually-hidden">: {{ poll.title }}</span>
+  </a>
+</li>
+{% endwith %}

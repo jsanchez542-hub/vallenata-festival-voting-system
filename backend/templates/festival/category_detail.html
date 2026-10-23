@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }}{% endblock %}
+{% block description %}Votaciones de la categoría {{ category.name }} en el {{ category.edition.number }} {{ category.edition.name }}.{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">{{ category.name }}</h1>
+      {% if category.description %}<p class="page-banner__lead">{{ category.description }}</p>{% endif %}
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li><a href="{{ category.edition.get_absolute_url }}">{{ category.edition.short_name }}</a></li>
+  <li><span aria-current="page">{{ category.name }}</span></li>
+{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <h2 class="visually-hidden">Votaciones de la categoría</h2>
+    <ul class="row-list">
+      {% for poll in polls %}
+        {% include "festival/includes/poll_row.html" %}
+      {% empty %}
+        <li>
+          <div class="empty-state">
+            <h3>Esta categoría todavía no tiene votaciones publicadas</h3>
+            <p>Revisa las otras categorías de la edición.</p>
+            <a class="button button--outline" href="{{ category.edition.get_absolute_url }}">Ver categorías</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

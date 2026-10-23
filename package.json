@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "npx --yes serve . -l 8080",
-    "lint": "eslint assets/js"
+    "lint": "eslint assets/js backend/static/js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

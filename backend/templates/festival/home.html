@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static festival_display %}
+
+{% block preload %}<link rel="preload" href="{% static 'img/hero-accordion.webp' %}" as="image" type="image/webp">{% endblock %}
+
+{% block banner %}
+  <section class="hero on-stage" aria-labelledby="hero-title">
+    <div class="hero__media">
+      <picture>
+        <source srcset="{% static 'img/hero-accordion.webp' %}" type="image/webp">
+        <img src="{% static 'img/hero-accordion.jpg' %}" width="912" height="480" alt="Acordeonero con sombrero tocando su acordeón frente al micrófono" fetchpriority="high">
+      </picture>
+    </div>
+    <div class="container">
+      <div class="hero__content">
+        {% if edition %}
+          <p class="hero__edition"><span class="hero__edition-number">{{ edition.number }}</span> <span class="hero__edition-text"><strong>{{ edition.name }}</strong> <span>{{ edition.city }}, {{ edition|edition_dates }}</span></span></p>
+        {% endif %}
+        <h1 class="hero__title" id="hero-title">Votaciones del público</h1>
+        <p class="hero__lead">Elige tu opción y confirma tu voto desde el celular, con las reglas de cada votación a la vista.</p>
+        <div class="cluster hero__actions">
+          <a class="button" href="{% url 'festival:poll-list' %}?status=open">Ver votaciones abiertas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb_band %}{% endblock %}
+
+{% block content %}
+  <section class="container section" aria-labelledby="open-title">
+    <div class="section-heading">
+      <h2 id="open-title">Votaciones abiertas</h2>
+      <a href="{% url 'festival:poll-list' %}">Ver todas</a>
+    </div>
+    <ul class="row-list">
+      {% for poll in open_polls %}
+        {% include "festival/includes/poll_row.html" %}
+      {% empty %}
+        <li>
+          <div class="empty-state">
+            <h3>No hay votaciones abiertas en este momento</h3>
+            <p>Revisa las votaciones próximas para saber cuándo abren.</p>
+            <a class="button button--outline" href="{% url 'festival:poll-list' %}?status=upcoming">Ver votaciones próximas</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="band-stage" aria-labelledby="how-title">
+    <div class="container">
+      <h2 id="how-title">Cómo votar</h2>
+      <ol class="steps">
+        <li class="steps__item">
+          <h3 class="steps__title">Ingresa con tu cuenta</h3>
+          <p>Si no tienes una, créala con tu correo.</p>
+        </li>
+        <li class="steps__item">
+          <h3 class="steps__title">Elige una votación y una opción</h3>
+          <p>Antes de votar ves cuántos votos tienes y cuándo cierra.</p>
+        </li>
+        <li class="steps__item">
+          <h3 class="steps__title">Confirma tu voto</h3>
+          <p>Recibes un código de confirmación.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  {% if categories %}
+    <section class="band-muted section" aria-labelledby="categories-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="categories-title">Categorías</h2>
+          <a href="{% url 'festival:category-list' %}">Ver todas</a>
+        </div>
+        <ul class="category-index">
+          {% for category in categories %}
+            {% include "festival/includes/category_row.html" %}
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Página no encontrada{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">No encontramos esta página</h1>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}<li><span aria-current="page">Página no encontrada</span></li>{% endblock %}
+
+{% block content %}
+  <div class="container container--narrow section">
+    <div class="empty-state">
+      <p>El enlace puede estar incompleto o la votación ya no está publicada.</p>
+      <a class="button" href="{% url 'festival:poll-list' %}">Ver las votaciones</a>
+    </div>
+  </div>
+{% endblock %}

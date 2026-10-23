@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}{{ poll.title }}{% endblock %}
+{% block description %}{{ poll.description|default:poll.title }}{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">{{ poll.title }}</h1>
+      {% if poll.description %}<p class="page-banner__lead">{{ poll.description }}</p>{% endif %}
+      <div class="page-banner__meta">
+        <span class="status status--{{ poll.status }}">{{ poll.status.label }}</span>
+        <span class="meta-item">{{ poll.category.name }}</span>
+        <span class="meta-item">{{ poll|poll_window }}</span>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li><a href="{{ poll.category.edition.get_absolute_url }}">{{ poll.category.edition.short_name }}</a></li>
+  <li><a href="{{ poll.category.get_absolute_url }}">{{ poll.category.name }}</a></li>
+  <li><span aria-current="page">{{ poll.title }}</span></li>
+{% endblock %}
+
+{% block content %}
+  {% with status=poll.status %}
+    <div class="container poll-layout poll-layout--split">
+      <section class="stack" aria-labelledby="options-title">
+        <h2 id="options-title">Opciones ({{ options|length }})</h2>
+        <ul class="row-list">
+          {% for option in options %}
+            <li class="row-list__item">
+              <div class="option-summary">
+                <div class="stack stack--tight">
+                  <p class="row-list__title">{{ option.name }}</p>
+                  {% if option.detail %}<p class="field__hint">{{ option.detail }}</p>{% endif %}
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <aside class="stack stack--roomy" aria-label="Votar y reglas">
+        {% if status == "open" %}
+          <div class="notice">
+            <p>El registro de votos todavía no está habilitado en esta versión. Por ahora puedes revisar las opciones y las reglas.</p>
+          </div>
+        {% elif status == "upcoming" %}
+          <button class="button button--block" type="button" disabled>{{ poll|poll_window }}</button>
+        {% else %}
+          <div class="notice">
+            <p>Esta votación ya cerró.</p>
+          </div>
+        {% endif %}
+
+        <section class="stack" aria-labelledby="rules-title">
+          <h2 id="rules-title">Reglas</h2>
+          <dl class="rule-list">
+            <div class="rule-list__item"><dt>Votos por persona</dt><dd>{{ poll|vote_allowance }}</dd></div>
+            <div class="rule-list__item"><dt>Identificación</dt><dd>{% if poll.requires_account %}Con cuenta{% else %}Sin cuenta{% endif %}</dd></div>
+            <div class="rule-list__item"><dt>Resultados visibles</dt><dd>{{ poll.get_results_visibility_display }}</dd></div>
+            <div class="rule-list__item"><dt>Apertura</dt><dd>{{ poll.opens_at|datetime_label }}</dd></div>
+            <div class="rule-list__item"><dt>Cierre</dt><dd>{{ poll.closes_at|datetime_label }}</dd></div>
+          </dl>
+        </section>
+      </aside>
+    </div>
+  {% endwith %}
+{% endblock %}

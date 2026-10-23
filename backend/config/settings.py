@@ -5,6 +5,7 @@ from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+PROTOTYPE_ASSETS = BASE_DIR.parent / "assets"
 
 load_dotenv(BASE_DIR / ".env")
 
@@ -51,7 +52,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -94,6 +95,12 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    ("css", PROTOTYPE_ASSETS / "css"),
+    ("fonts", PROTOTYPE_ASSETS / "fonts"),
+    ("img", PROTOTYPE_ASSETS / "img"),
+]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

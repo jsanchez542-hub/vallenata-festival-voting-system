@@ -1,0 +1,7 @@
+<li>
+  <a class="category-index__link" href="{{ category.get_absolute_url }}">
+    <span class="category-index__name">{{ category.name }}</span>
+    <span class="category-index__summary">{{ category.description }}</span>
+    <span class="category-index__count">{{ category.poll_count }} votaci{{ category.poll_count|pluralize:"ón,ones" }}{% if category.open_poll_count %}, {{ category.open_poll_count }} abierta{{ category.open_poll_count|pluralize }}{% endif %}</span>
+  </a>
+</li>

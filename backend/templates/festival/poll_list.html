@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}Votaciones{% endblock %}
+{% block description %}Votaciones abiertas, próximas y cerradas del Festival de la Leyenda Vallenata.{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">Votaciones</h1>
+      {% if edition %}<p class="page-banner__lead">{{ edition.number }} {{ edition.name }}, {{ edition|edition_dates }}.</p>{% endif %}
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}<li><span aria-current="page">Votaciones</span></li>{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <div class="toolbar">
+      <nav aria-label="Filtrar por estado">
+        <div class="segmented">
+          <a class="segmented__item" href="{% url 'festival:poll-list' %}"{% if not status %} aria-current="true"{% endif %}>Todas</a>
+          <a class="segmented__item" href="{% url 'festival:poll-list' %}?status=open"{% if status == "open" %} aria-current="true"{% endif %}>Abiertas</a>
+          <a class="segmented__item" href="{% url 'festival:poll-list' %}?status=upcoming"{% if status == "upcoming" %} aria-current="true"{% endif %}>Próximas</a>
+          <a class="segmented__item" href="{% url 'festival:poll-list' %}?status=closed"{% if status == "closed" %} aria-current="true"{% endif %}>Cerradas</a>
+        </div>
+      </nav>
+    </div>
+    <h2 class="visually-hidden">{{ polls|length }} votaci{{ polls|length|pluralize:"ón,ones" }}</h2>
+    <ul class="row-list">
+      {% for poll in polls %}
+        {% include "festival/includes/poll_row.html" %}
+      {% empty %}
+        <li>
+          <div class="empty-state">
+            <h3>No hay votaciones con este estado</h3>
+            <p>Prueba con otro estado o revisa todas las votaciones.</p>
+            <a class="button button--outline" href="{% url 'festival:poll-list' %}">Ver todas</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

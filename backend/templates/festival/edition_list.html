@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}Ediciones{% endblock %}
+{% block description %}Ediciones del Festival de la Leyenda Vallenata con sus categorías y votaciones.{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">Ediciones</h1>
+      <p class="page-banner__lead">Cada edición del Festival tiene sus propias categorías y votaciones.</p>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}<li><span aria-current="page">Ediciones</span></li>{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <ul class="row-list">
+      {% for edition in editions %}
+        <li class="row-list__item">
+          <div class="stack stack--tight">
+            <h2 class="row-list__title"><a href="{{ edition.get_absolute_url }}">{{ edition.number }} {{ edition.name }}</a></h2>
+            <div class="row-list__meta">
+              {% if edition == current_edition %}<span class="status status--open">Vigente</span>{% endif %}
+              <span class="meta-item">{{ edition.city }}, {{ edition|edition_dates }}</span>
+              <span class="meta-item">{{ edition.category_count }} categoría{{ edition.category_count|pluralize }}</span>
+              <span class="meta-item">{{ edition.poll_count }} votaci{{ edition.poll_count|pluralize:"ón,ones" }}</span>
+            </div>
+          </div>
+          <a class="button button--outline row-list__action" href="{{ edition.get_absolute_url }}">Ver categorías<span class="visually-hidden">: edición {{ edition.number }}</span></a>
+        </li>
+      {% empty %}
+        <li>
+          <div class="empty-state">
+            <h2>Todavía no hay ediciones</h2>
+            <p>Cuando la organización registre una edición, aparecerá aquí.</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

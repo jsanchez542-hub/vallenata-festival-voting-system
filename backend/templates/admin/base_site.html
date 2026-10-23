@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}{{ block.super }}
+<style>
+  @view-transition { navigation: auto; }
+  @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+</style>
+<script src="{% static 'js/view-transitions.js' %}"></script>
+{% endblock %}

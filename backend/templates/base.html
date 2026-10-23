@@ -1,0 +1,99 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @view-transition { navigation: auto; }
+    @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+  </style>
+  <title>{% block title %}Votaciones del público{% endblock %} | Festival de la Leyenda Vallenata</title>
+  <meta name="description" content="{% block description %}Votaciones del público del Festival de la Leyenda Vallenata.{% endblock %}">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="icon" href="{% static 'img/favicon-32.png' %}" sizes="32x32" type="image/png">
+  <link rel="icon" href="{% static 'img/favicon-16.png' %}" sizes="16x16" type="image/png">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+  {% block preload %}{% endblock %}
+  <link rel="preload" href="{% static 'fonts/raleway-var.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/poppins-400.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/poppins-600.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/poppins-700.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pages.css' %}">
+  <script src="{% static 'js/view-transitions.js' %}"></script>
+  <script type="module" src="{% static 'js/site.js' %}"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <aside class="prototype-ribbon" aria-label="Aviso sobre el proyecto">
+    <div class="container"><strong>Proyecto académico en equipo</strong> del curso Desarrollo Web, Areandina. Datos de ejemplo.</div>
+  </aside>
+  <header class="site-header">
+    <div class="container site-header__bar">
+      <a class="brand" href="{% url 'festival:home' %}">
+        <img class="brand__logo" src="{% static 'img/brand/logo-on-dark.svg' %}" width="371" height="62" alt="Leyenda Vallenata, votaciones del público. Ir al inicio">
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+        <span class="visually-hidden">Abrir menú</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Principal" data-open="false">
+        <ul class="site-nav__list container">
+          <li><a class="site-nav__link" href="{% url 'festival:home' %}"{% if nav_section == "home" %} aria-current="page"{% endif %}>Inicio</a></li>
+          <li><a class="site-nav__link" href="{% url 'festival:category-list' %}"{% if nav_section == "categories" %} aria-current="page"{% endif %}>Categorías</a></li>
+          <li><a class="site-nav__link" href="{% url 'festival:poll-list' %}"{% if nav_section == "polls" %} aria-current="page"{% endif %}>Votaciones</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    {% block banner %}{% endblock %}
+    {% block breadcrumb_band %}
+      <nav class="breadcrumb-band" aria-label="Ruta de navegación">
+        <ol class="container breadcrumb">
+          <li><a href="{% url 'festival:home' %}">Inicio</a></li>
+          {% block breadcrumb %}{% endblock %}
+        </ol>
+      </nav>
+    {% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div>
+        <h2 class="site-footer__heading">Votaciones del Festival</h2>
+        <p>Versión en Django y MySQL de la Entrega 2 de Desarrollo Web, Fundación Universitaria del Área Andina.</p>
+        <p><a href="https://festivalvallenato.com" rel="noopener">Ir al sitio oficial del Festival</a></p>
+      </div>
+      <nav aria-label="Secundaria">
+        <h2 class="site-footer__heading">Navegación</h2>
+        <ul class="site-footer__links">
+          <li><a href="{% url 'festival:home' %}">Inicio</a></li>
+          <li><a href="{% url 'festival:edition-list' %}">Ediciones</a></li>
+          <li><a href="{% url 'festival:category-list' %}">Categorías</a></li>
+          <li><a href="{% url 'festival:poll-list' %}">Votaciones</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2 class="site-footer__heading">Administración</h2>
+        <p>Las ediciones, categorías, votaciones y opciones se registran en el panel de administración de Django.</p>
+        <p><a href="{% url 'admin:index' %}">Ir a la administración</a></p>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <div class="container">2026. Proyecto académico en equipo, grupo <span class="nowrap">202660-6A-62</span>.</div>
+    </div>
+  </footer>
+  {% if messages %}
+    <div class="toast-region" role="status">
+      {% for message in messages %}
+        <p class="toast{% if message.level_tag == 'danger' %} toast--danger{% endif %}">{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+</body>
+</html>

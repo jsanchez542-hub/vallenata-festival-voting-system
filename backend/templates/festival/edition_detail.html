@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}Categorías, edición {{ edition.number }}{% endblock %}
+{% block description %}Categorías del {{ edition.number }} {{ edition.name }}.{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">Categorías</h1>
+      <p class="page-banner__lead">{{ edition.number }} {{ edition.name }}. {{ edition.city }}, {{ edition|edition_dates }}.</p>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li><a href="{% url 'festival:edition-list' %}">Ediciones</a></li>
+  <li><span aria-current="page">{{ edition.short_name }}</span></li>
+{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <ul class="category-index">
+      {% for category in categories %}
+        {% include "festival/includes/category_row.html" %}
+      {% empty %}
+        <li>
+          <div class="empty-state">
+            <h2>Todavía no hay categorías</h2>
+            <p>Cuando la organización las publique, aparecerán aquí.</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
