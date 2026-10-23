@@ -3,7 +3,7 @@ from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 
-from accounts.attempts import FAILURE_LIMIT
+from accounts.attempts import ACCOUNT_FAILURE_LIMIT, ADDRESS_FAILURE_LIMIT
 
 User = get_user_model()
 PASSWORD = "vallenato-2027"
@@ -84,15 +84,34 @@ class SignInTests(TestCase):
         self.assertContains(response, "El correo o la contraseña no son correctos.")
         self.assertNotIn("_auth_user_id", self.client.session)
 
-    def test_locks_the_form_after_repeated_failures(self):
-        for _ in range(FAILURE_LIMIT):
-            self.sign_in(password="otra-clave")
-        response = self.sign_in()
+    def assertLocked(self, response):
         self.assertContains(response, "Hubo demasiados intentos fallidos.")
         self.assertNotIn("_auth_user_id", self.client.session)
 
+    def test_locks_the_form_after_repeated_failures(self):
+        for _ in range(ACCOUNT_FAILURE_LIMIT):
+            self.sign_in(password="otra-clave")
+        self.assertLocked(self.sign_in())
+
+    def test_variants_of_the_email_share_one_counter(self):
+        variants = ["MARIA@ejemplo.co", "maría@ejemplo.co", " Maria@Ejemplo.co "]
+        for index in range(ACCOUNT_FAILURE_LIMIT):
+            self.sign_in(password="otra-clave", email=variants[index % len(variants)])
+        self.assertLocked(self.sign_in())
+
+    def test_an_incomplete_submission_does_not_reset_the_count(self):
+        for _ in range(ACCOUNT_FAILURE_LIMIT - 1):
+            self.sign_in(password="otra-clave")
+        self.sign_in(password="")
+        self.assertLocked(self.sign_in())
+
+    def test_limits_failures_from_one_address_across_accounts(self):
+        for index in range(ADDRESS_FAILURE_LIMIT):
+            self.sign_in(password="otra-clave", email=f"persona{index}@ejemplo.co")
+        self.assertLocked(self.sign_in())
+
     def test_a_successful_sign_in_resets_the_failure_count(self):
-        for _ in range(FAILURE_LIMIT - 1):
+        for _ in range(ACCOUNT_FAILURE_LIMIT - 1):
             self.sign_in(password="otra-clave")
         self.sign_in()
         self.client.logout()

@@ -123,7 +123,7 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 - Four related models with constraints in the database: an edition cannot end before it starts, a poll cannot close before it opens, and names are unique within each edition and each poll.
 - The prototype's per-poll rules as model fields: votes per voter, period, results visibility and whether an account is required.
 - An admin with the categories inside each edition and the options inside each poll, a filter by poll status, and a check that blocks publishing a poll with fewer than two options.
-- Accounts that sign in with email, record when the person accepted the personal data policy, use Django's password validators and lock sign-in for two minutes after five failed attempts with the same email from the same address.
+- Accounts that sign in with email, record when the person accepted the personal data policy and use Django's password validators. Failed sign-ins are limited to five per account and twenty per address every two minutes.
 - Public pages for the home, the editions, the categories of an edition, the polls of a category, all polls filtered by status, and each poll with its options and rules.
 - A `load_demo_data` command that loads the prototype's sample edition, categories, polls and options, with poll dates relative to the day it runs.
 
@@ -134,7 +134,7 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 - Poll status (draft, upcoming, open or closed) is computed from the dates and the publish and close fields instead of being stored, so it cannot go stale. Querysets filter by status in SQL, and lists show open polls first.
 - Editions with categories and categories with polls cannot be deleted, because the votes of the next phase will depend on them.
 - `STATICFILES_DIRS` serves the prototype's `css`, `fonts` and `img` folders, so there is a single copy of the design. The prototype's JavaScript is not used: Django renders every page, and the backend adds one small script for the mobile menu and the messages.
-- The sign-in lock uses Django's cache. The default in-memory cache works for a single process; a deployment with several processes needs Redis or Memcached.
+- The sign-in limit counts every attempt with an atomic cache increment before the password is checked, so parallel requests cannot get past it. The count belongs to the account the email resolves to, because MySQL compares emails without case or accents and each spelling would otherwise get its own count. The default in-memory cache works for a single process; a deployment with several processes needs Redis or Memcached, and behind a proxy `REMOTE_ADDR` has to carry the client's address.
 
 ### Quality checks
 
@@ -163,7 +163,7 @@ docs/           Screenshots
 
 ## Limitations
 
-- In the prototype, state lives in the browser (`localStorage`), so data is per device and sample data resets after 14 days. Its password hashing and sign-in lock run in the browser because there is no server; the Django backend uses Django's password hashers and a server-side lock.
+- In the prototype, state lives in the browser (`localStorage`), so data is per device and sample data resets after 14 days. Its password hashing and sign-in lock run in the browser because there is no server; the Django backend uses Django's password hashers and limits failed sign-ins on the server.
 - The backend does not record votes, results or an audit log yet, and it has no production deployment.
 - Rules, categories and polls are examples. The open questions for the client are tracked in the project analysis document.
 

@@ -133,7 +133,7 @@ The user model (`accounts.User`) replaces Django's default one: it has no userna
 
 ```
 config/       Settings, URLs and the WSGI entry point
-accounts/     User model and manager, forms, the sign-in lock, views and admin
+accounts/     User model and manager, forms, the sign-in limit, views and admin
 festival/     Models, admin, public views, template filters and the load_demo_data command
 templates/    Base layout, public pages, account forms, the 404 page and the admin override
 static/js/    Mobile menu, message dismissal and page transition handling

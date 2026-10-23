@@ -71,14 +71,11 @@ class SignInForm(PrototypeInputMixin, AuthenticationForm):
 
     def clean(self):
         attempts = SignInAttempts(self.request, self.cleaned_data.get("username", ""))
-        if attempts.is_locked:
+        if not attempts.start():
             raise ValidationError(self.error_messages["locked"], code="locked")
-        try:
-            cleaned_data = super().clean()
-        except ValidationError:
-            attempts.record_failure()
-            raise
-        attempts.clear()
+        cleaned_data = super().clean()
+        if self.user_cache is not None:
+            attempts.succeeded()
         return cleaned_data
 
 
