@@ -4,3 +4,9 @@ Thumbs.db
 *.log
 .env
 .env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
+backend/staticfiles/
