@@ -2,13 +2,14 @@
 
 [![CI](https://github.com/jsanchez542-hub/vallenata-festival-voting-system/actions/workflows/ci.yml/badge.svg)](https://github.com/jsanchez542-hub/vallenata-festival-voting-system/actions/workflows/ci.yml)
 
-Configurable public voting platform for the 60th Festival de la Leyenda Vallenata (Valledupar, Colombia, April 28 to May 1, 2027). It is a university team project for the Web Development course at Fundación Universitaria del Área Andina, built in phases that follow the course deliverables.
+Public voting platform for the 60th Festival de la Leyenda Vallenata (Valledupar, Colombia, April 28 to May 1, 2027). It is a university team project for the Web Development course at Fundación Universitaria del Área Andina, built in phases that follow the course deliverables.
 
 | Phase | What it delivers | Where |
 | --- | --- | --- |
 | 1. Analysis, design and prototype | Interactive front-end prototype that validates the flows and the interface, with data kept in the browser | Repository root, [live demo](https://jsanchez542-hub.github.io/vallenata-festival-voting-system/) |
 | 2. Django and MySQL | Data model, Django admin, user accounts and public pages that read from MySQL | [`backend/`](backend/README.md) |
-| Next | Casting votes under each poll's rules, duplicate control, results and audit log, then deployment | Not started |
+| 3. Votes and API | One vote per voter, category and edition, with a confirmation step and a receipt, each voter's votes, a read-only vote list in the admin and a JSON API | [`backend/`](backend/README.md) |
+| Next | Results under each poll's visibility setting, audit log and deployment | Not started |
 
 This is an academic project. It is not an official site of the Fundación Festival de la Leyenda Vallenata, and all categories, polls and rules shown are sample data pending validation with the client.
 
@@ -112,7 +113,7 @@ The sign-in page has one-click buttons for both accounts, and every page links t
 
 ## Phase 2: Django and MySQL
 
-The second deliverable asked for a Django project connected to MySQL: related models for the Edition, Category, Poll and Option chain, administration through the Django admin, sign-up, sign-in and sign-out with Django's authentication, and public pages that show real data. Casting votes belongs to the next phase, so open polls show their options and rules with a notice that voting is not enabled yet.
+The second deliverable asked for a Django project connected to MySQL: related models for the Edition, Category, Poll and Option chain, administration through the Django admin, sign-up, sign-in and sign-out with Django's authentication, and public pages that show real data. Casting votes was left for the next phase, so at this point open polls showed their options and rules with a notice that voting was not enabled yet.
 
 The pages reuse the prototype's CSS, fonts and images straight from `assets/`, so both phases look the same. Setup instructions are in [backend/README.md](backend/README.md).
 
@@ -121,7 +122,7 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 ### What it adds
 
 - Four related models with constraints in the database: an edition cannot end before it starts, a poll cannot close before it opens, and names are unique within each edition and each poll.
-- The prototype's per-poll rules as model fields: votes per voter, period, results visibility and whether an account is required.
+- The prototype's per-poll rules as model fields: votes per voter, period, results visibility and whether an account is required. Phase 3 replaced all of them except results visibility with the course's voting rule.
 - An admin with the categories inside each edition and the options inside each poll, a filter by poll status, and a check that blocks publishing a poll with fewer than two options.
 - Accounts that sign in with email, record when the person accepted the personal data policy and use Django's password validators. Failed sign-ins are limited to five per account and twenty per address every two minutes.
 - Public pages for the home, the editions, the categories of an edition, the polls of a category, all polls filtered by status, and each poll with its options and rules.
@@ -143,6 +144,37 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 - Valid HTML (html-validate) on every page and form state.
 - The home page runs three queries however many polls and categories it shows.
 
+## Phase 3: votes, validation and API
+
+The third deliverable asked for a real voting module on top of the second phase: sign in, choose an option, confirm it and store the vote in MySQL. The course set the central rule for every team: one vote per user, category and edition, even when a category has several polls, while voting in other categories stays possible. It also asked for server-side checks against closed polls, options from other polls and unauthorized requests, protection against simultaneous duplicates, a page with each voter's categories, an admin view of the votes and a GET endpoint that returns the categories and their options as JSON.
+
+![Voting flow in the Django backend](docs/screenshots/django-vote-flow.jpg)
+
+### What it adds
+
+- The prototype's three steps (choose an option, confirm, done) as Django pages, with a receipt code in the same `FVL-` format.
+- A `Vote` model that links the voter, the edition, the category and the option, with a unique constraint on voter, edition and category.
+- Checks on every request before a vote is saved: the voter is signed in, the poll is open, the option belongs to the poll and the voter has no vote in that category yet. A request built by hand gets the same refusal as the form.
+- A My votes page with the categories the person voted in and their receipts, and a receipt page that only its voter can open.
+- A vote list in the Django admin that can be searched and filtered but not added to, changed or deleted.
+- `GET /api/categories/`, the assignment's `/api/categorias/` with an English path like the rest of the site. It returns the active categories with their published polls and options as JSON.
+- Sample data with two open polls in Música, so the category rule can be tried, and an open poll in another category.
+
+### Technical decisions
+
+- The course's rule replaces the prototype's per-poll limits: votes per voter, per-day periods and polls without an account. Keeping those fields would leave admin settings that do nothing, so the migration removes them. Results visibility stays for the next phase.
+- The rule is enforced twice. The form gives a clear message in normal use, and the unique constraint in MySQL settles requests that pass the form check at the same moment. The view saves inside a transaction, catches the integrity error and answers with the same message instead of a server error.
+- A vote stores its edition and category next to the option because MySQL can only enforce a unique constraint on columns of one table. Both are copied from the option when the vote is cast, and the admin rejects the two edits that would make them disagree: moving a poll with votes to another category and moving a category with votes to another edition.
+- The receipt column is unique too, so an integrity error can also mean a repeated code. Casting a vote checks whether the ballot already exists before calling it a duplicate, and otherwise tries again with a new code.
+- Votes protect what they point to. Voters, options, categories and editions with votes cannot be deleted, and the poll form does not let an option with votes be renamed or removed.
+- Choosing an option is a GET request to the confirmation page, which saves nothing. Only the confirmation is a POST, protected by Django's CSRF token.
+- The API runs three queries however many categories it returns, gives dates in Colombia time and answers 405 to any method other than GET.
+
+### Quality checks
+
+- 94 tests. The new ones follow the course's test cases CP-01 to CP-10, including eight threads that post the same vote at once against MySQL and leave a single vote. GitHub Actions runs them on MySQL 8.4.
+- axe-core (WCAG 2.1 AA) reports no violations on the new pages at 390 and 1440 px, and their HTML passes html-validate.
+
 ## Project structure
 
 ```
@@ -155,7 +187,7 @@ admin/          Prototype administration pages
 backend/
   accounts/     Custom user model, sign-up, sign-in and sign-out
   config/       Settings and URLs
-  festival/     Editions, categories, polls and options: models, admin, views and the demo data command
+  festival/     Editions, categories, polls, options and votes: models, admin, views, the JSON API and the demo data command
   static/js/    Mobile menu, messages and page transitions
   templates/    Base layout, public pages, account forms and the admin override
 docs/           Screenshots
@@ -164,13 +196,13 @@ docs/           Screenshots
 ## Limitations
 
 - In the prototype, state lives in the browser (`localStorage`), so data is per device and sample data resets after 14 days. Its password hashing and sign-in lock run in the browser because there is no server; the Django backend uses Django's password hashers and limits failed sign-ins on the server.
-- The backend does not record votes, results or an audit log yet, and it has no production deployment.
+- The backend records votes but does not show results or keep an audit log yet. It has no production deployment, so the JSON API only answers where the project runs.
 - Rules, categories and polls are examples. The open questions for the client are tracked in the project analysis document.
 
 ## Team and credits
 
 Team project, Web Development course (group 202660-6A-62), Fundación Universitaria del Área Andina, 2026. The analysis and design document is the shared work of the team.
 
-Prototype design and development, as the team's UX/UI and prototype lead: Miguel Sanchez Torres. The Django implementation in `backend/` is also his work; the team's joint submission for the second deliverable is kept in a separate team repository.
+Prototype design and development, as the team's UX/UI and prototype lead: Miguel Sanchez Torres. The Django implementation in `backend/` is also his work; the team's joint submissions for the second and third deliverables are kept in a separate team repository.
 
 Fonts: Raleway and Poppins, both under the SIL Open Font License, with their license texts in `assets/fonts`. The logo lettering comes from Alfa Slab One and Archivo, also under the SIL Open Font License.
