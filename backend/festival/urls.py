@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import api, views
 
 app_name = "festival"
 
@@ -16,4 +16,5 @@ urlpatterns = [
     path("polls/<slug:slug>/vote/confirm/", views.ConfirmVoteView.as_view(), name="vote-confirm"),
     path("votes/<str:receipt>/", views.VoteReceiptView.as_view(), name="vote-receipt"),
     path("my-votes/", views.MyVotesView.as_view(), name="my-votes"),
+    path("api/categories/", api.categories, name="api-categories"),
 ]
