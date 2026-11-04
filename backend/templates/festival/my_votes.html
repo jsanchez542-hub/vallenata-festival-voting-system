@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}Mis votos{% endblock %}
+{% block description %}Las categorías en las que ya votaste y sus códigos de confirmación.{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">Mis votos</h1>
+      <p class="page-banner__lead">Las categorías en las que ya votaste, con su código de confirmación.</p>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}<li><span aria-current="page">Mis votos</span></li>{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <h2 class="visually-hidden">{{ votes|length }} voto{{ votes|length|pluralize }}</h2>
+    <ul class="row-list">
+      {% for vote in votes %}
+        <li class="row-list__item">
+          <div class="stack stack--tight">
+            <h3 class="row-list__title">{{ vote.category.name }}</h3>
+            <p>Votaste por <strong>{{ vote.option.name }}</strong> en <a href="{{ vote.option.poll.get_absolute_url }}">{{ vote.option.poll.title }}</a>.</p>
+            <div class="row-list__meta">
+              <span class="meta-item">{{ vote.edition.short_name }}</span>
+              <span class="meta-item">{{ vote.cast_at|datetime_label }}</span>
+            </div>
+          </div>
+          <a class="button button--outline row-list__action" href="{{ vote.get_absolute_url }}">{{ vote.receipt }}<span class="visually-hidden">: comprobante de {{ vote.category.name }}</span></a>
+        </li>
+      {% empty %}
+        <li>
+          <div class="empty-state">
+            <h3>Todavía no has votado</h3>
+            <p>Cuando confirmes un voto, aquí aparecerá con su código de confirmación.</p>
+            <a class="button" href="{% url 'festival:poll-list' %}?status=open">Ver votaciones abiertas</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

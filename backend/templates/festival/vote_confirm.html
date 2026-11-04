@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar voto{% endblock %}
+{% block description %}Revisa tu selección y confirma tu voto.{% endblock %}
+
+{% block banner %}{% include "festival/includes/vote_steps.html" with step=2 %}{% endblock %}
+
+{% block breadcrumb %}{% include "festival/includes/vote_trail.html" with step_label="Confirmar voto" %}{% endblock %}
+
+{% block content %}
+  <div class="container container--narrow poll-layout">
+    <section class="confirm-panel stack" aria-labelledby="confirm-title">
+      <h2 class="field__label" id="confirm-title">Vas a votar por</h2>
+      <p class="confirm-panel__choice">{{ option.name }}</p>
+      {% if option.detail %}<p class="field__hint">{{ option.detail }}</p>{% endif %}
+    </section>
+    <div class="notice notice--warning">
+      <p><strong>Un voto confirmado no se puede cambiar.</strong></p>
+      <p>Después de confirmarlo no podrás votar otra vez en la categoría {{ poll.category.name }} de esta edición.</p>
+    </div>
+    <form class="form-actions" method="post" action="{% url 'festival:vote-confirm' poll.slug %}">
+      {% csrf_token %}
+      <input type="hidden" name="option" value="{{ option.pk }}">
+      <button class="button" type="submit">Confirmar voto</button>
+      <a class="button button--outline" href="{% url 'festival:vote' poll.slug %}?option={{ option.pk }}">Cambiar opción</a>
+    </form>
+  </div>
+{% endblock %}

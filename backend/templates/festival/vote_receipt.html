@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}Voto registrado{% endblock %}
+{% block description %}Comprobante de tu voto.{% endblock %}
+
+{% block banner %}{% include "festival/includes/vote_steps.html" with poll=vote.option.poll step=3 %}{% endblock %}
+
+{% block breadcrumb %}{% include "festival/includes/vote_trail.html" with poll=vote.option.poll step_label="Voto registrado" %}{% endblock %}
+
+{% block content %}
+  <div class="container container--narrow poll-layout">
+    <section class="receipt stack" aria-labelledby="receipt-title">
+      <h2 id="receipt-title">Voto registrado</h2>
+      <p class="receipt__code">{{ vote.receipt }}</p>
+      <p class="field__hint">Código de confirmación. Guárdalo si necesitas consultarlo después.</p>
+      <dl class="facts facts--ruled">
+        <div class="facts__item"><dt>Tu voto</dt><dd>{{ vote.option.name }}</dd></div>
+        <div class="facts__item"><dt>Categoría</dt><dd>{{ vote.category.name }} ({{ vote.edition.year }})</dd></div>
+        <div class="facts__item"><dt>Fecha y hora</dt><dd>{{ vote.cast_at|datetime_label }}</dd></div>
+      </dl>
+    </section>
+    <div class="form-actions">
+      <a class="button" href="{% url 'festival:my-votes' %}">Ver mis votos</a>
+      <a class="button button--outline" href="{% url 'festival:poll-list' %}?status=open">Ver más votaciones abiertas</a>
+    </div>
+  </div>
+{% endblock %}

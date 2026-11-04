@@ -1,10 +1,16 @@
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+import secrets
+
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError, models, transaction
 from django.db.models import Count, F, Q
 from django.urls import reverse
 from django.utils import timezone
 
 MIN_OPTIONS_TO_PUBLISH = 2
+RECEIPT_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"
+RECEIPT_LENGTH = 8
+RECEIPT_ATTEMPTS = 3
 
 
 class PollStatus(models.TextChoices):
@@ -12,11 +18,6 @@ class PollStatus(models.TextChoices):
     UPCOMING = "upcoming", "Próxima"
     OPEN = "open", "Abierta"
     CLOSED = "closed", "Cerrada"
-
-
-class VotePeriod(models.TextChoices):
-    TOTAL = "total", "En total"
-    DAY = "day", "Por día"
 
 
 class ResultsVisibility(models.TextChoices):
@@ -119,6 +120,14 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse("festival:category-detail", args=[self.pk])
 
+    def clean(self):
+        super().clean()
+        saved = Category.objects.filter(pk=self.pk).values_list("edition_id", flat=True).first()
+        if saved and saved != self.edition_id and self.votes.exists():
+            raise ValidationError(
+                {"edition": "Esta categoría ya tiene votos y no se puede pasar a otra edición."}
+            )
+
 
 class PollQuerySet(models.QuerySet):
     def published(self):
@@ -172,19 +181,12 @@ class Poll(models.Model):
         default=False,
         help_text="Cierra la votación aunque no haya llegado la fecha de cierre.",
     )
-    votes_per_voter = models.PositiveSmallIntegerField(
-        "votos por persona", default=1, validators=[MinValueValidator(1), MaxValueValidator(10)]
-    )
-    vote_period = models.CharField(
-        "periodo de los votos", max_length=10, choices=VotePeriod, default=VotePeriod.TOTAL
-    )
     results_visibility = models.CharField(
         "resultados visibles",
         max_length=12,
         choices=ResultsVisibility,
         default=ResultsVisibility.AFTER_CLOSE,
     )
-    requires_account = models.BooleanField("exige cuenta para votar", default=True)
 
     objects = PollQuerySet.as_manager()
 
@@ -205,6 +207,14 @@ class Poll(models.Model):
 
     def get_absolute_url(self):
         return reverse("festival:poll-detail", args=[self.slug])
+
+    def clean(self):
+        super().clean()
+        saved = Poll.objects.filter(pk=self.pk).values_list("category_id", flat=True).first()
+        if saved and saved != self.category_id and Vote.objects.filter(option__poll=self).exists():
+            raise ValidationError(
+                {"category": "Esta votación ya tiene votos y no se puede pasar a otra categoría."}
+            )
 
     @property
     def status(self):
@@ -245,6 +255,70 @@ class Option(models.Model):
 
     def __str__(self):
         return self.name
+
+
+def new_receipt():
+    code = "".join(secrets.choice(RECEIPT_ALPHABET) for _ in range(RECEIPT_LENGTH))
+    return f"FVL-{code}"
+
+
+class DuplicateVote(Exception):
+    pass
+
+
+class VoteQuerySet(models.QuerySet):
+    def in_category(self, voter, category):
+        return self.filter(voter=voter, edition_id=category.edition_id, category=category)
+
+
+class Vote(models.Model):
+    voter = models.ForeignKey(
+        settings.AUTH_USER_MODEL, models.PROTECT, related_name="votes", verbose_name="votante"
+    )
+    edition = models.ForeignKey(
+        Edition, models.PROTECT, related_name="votes", verbose_name="edición"
+    )
+    category = models.ForeignKey(
+        Category, models.PROTECT, related_name="votes", verbose_name="categoría"
+    )
+    option = models.ForeignKey(Option, models.PROTECT, related_name="votes", verbose_name="opción")
+    receipt = models.CharField("código de confirmación", max_length=12, unique=True, editable=False)
+    cast_at = models.DateTimeField("registrado el", default=timezone.now, editable=False)
+
+    objects = VoteQuerySet.as_manager()
+
+    class Meta:
+        verbose_name = "voto"
+        verbose_name_plural = "votos"
+        ordering = ["-cast_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["voter", "edition", "category"],
+                name="one_vote_per_voter_category_edition",
+                violation_error_message="Esta persona ya votó en esta categoría de la edición.",
+            ),
+        ]
+
+    def __str__(self):
+        return self.receipt
+
+    def get_absolute_url(self):
+        return reverse("festival:vote-receipt", args=[self.receipt])
+
+    @classmethod
+    def cast(cls, voter, option):
+        category = option.poll.category
+        ballot = {"voter": voter, "edition_id": category.edition_id, "category": category}
+        for _ in range(RECEIPT_ATTEMPTS):
+            try:
+                with transaction.atomic():
+                    return cls.objects.create(option=option, receipt=new_receipt(), **ballot)
+            except IntegrityError:
+                # The same error covers a repeated receipt, so only an existing ballot counts as a
+                # duplicate vote; a repeated receipt gets a new code on the next attempt.
+                if cls.objects.filter(**ballot).exists():
+                    raise DuplicateVote from None
+        raise IntegrityError("No se pudo generar un código de confirmación único.")
 
 
 STATUS_RANK = {

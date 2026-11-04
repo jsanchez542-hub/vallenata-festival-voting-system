@@ -56,7 +56,7 @@ class PublicPagesTests(TestCase):
         self.assertContains(response, "Opciones (2)")
         content = response.content.decode()
         self.assertLess(content.index("Canción A"), content.index("Canción B"))
-        self.assertContains(response, "1 voto en total")
+        self.assertContains(response, "Uno por categoría en cada edición")
         self.assertContains(response, "Al cierre de la votación")
 
     def test_anonymous_visitor_is_invited_to_sign_in_and_come_back(self):
@@ -64,11 +64,11 @@ class PublicPagesTests(TestCase):
         sign_in = reverse("accounts:sign-in")
         self.assertContains(response, f'href="{sign_in}?next={self.song.get_absolute_url()}"')
 
-    def test_signed_in_visitor_is_told_that_voting_is_not_available_yet(self):
+    def test_signed_in_visitor_gets_the_vote_button(self):
         user = get_user_model().objects.create_user("votante@ejemplo.co", "vallenato-2027")
         self.client.force_login(user)
         response = self.client.get(self.song.get_absolute_url())
-        self.assertContains(response, "El registro de votos todavía no está habilitado")
+        self.assertContains(response, f'href="{reverse("festival:vote", args=[self.song.slug])}"')
         self.assertNotContains(response, "Ingresar para votar")
 
     def test_drafts_and_polls_in_inactive_categories_are_not_found(self):

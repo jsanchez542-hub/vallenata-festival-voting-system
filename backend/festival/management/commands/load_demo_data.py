@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from festival.models import Category, Edition, Option, Poll, ResultsVisibility, VotePeriod
+from festival.models import Category, Edition, Option, Poll, ResultsVisibility
 
 EDITION = {
     "number": 60,
@@ -43,8 +43,6 @@ POLLS = [
         "description": "Escoge la agrupación que más disfrutaste durante el Festival.",
         "opens_in_days": -1,
         "closes_in_days": 6,
-        "votes_per_voter": 3,
-        "vote_period": VotePeriod.DAY,
         "results_visibility": ResultsVisibility.LIVE,
         "options": [
             ("Conjunto A", "Categoría profesional"),
@@ -60,12 +58,25 @@ POLLS = [
         "description": (
             "Escoge el vestuario que más te llamó la atención en el Desfile de Piloneras."
         ),
-        "opens_in_days": 4,
-        "closes_in_days": 12,
+        "opens_in_days": -1,
+        "closes_in_days": 8,
         "options": [
             ("Vestuario A", "Piloneras mayores"),
             ("Vestuario B", "Piloneras juveniles"),
             ("Vestuario C", "Piloneras infantiles"),
+        ],
+    },
+    {
+        "category": "Piloneras y vestuario",
+        "title": "Comparsa favorita del desfile",
+        "slug": "comparsa-favorita-del-desfile",
+        "description": "Escoge la comparsa que mejor bailó en el Desfile de Piloneras.",
+        "opens_in_days": 4,
+        "closes_in_days": 12,
+        "options": [
+            ("Comparsa A", "Grupo de adultos"),
+            ("Comparsa B", "Grupo juvenil"),
+            ("Comparsa C", "Grupo infantil"),
         ],
     },
     {
@@ -117,12 +128,9 @@ class Command(BaseCommand):
                     "closes_at": at_hour(today + timedelta(days=spec["closes_in_days"]), 20),
                     "is_published": True,
                     "closed_early": False,
-                    "votes_per_voter": spec.get("votes_per_voter", 1),
-                    "vote_period": spec.get("vote_period", VotePeriod.TOTAL),
                     "results_visibility": spec.get(
                         "results_visibility", ResultsVisibility.AFTER_CLOSE
                     ),
-                    "requires_account": True,
                 },
             )
             for position, (name, detail) in enumerate(spec["options"], start=1):

@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db.models import Count
 
 from .forms import OptionInlineFormSet
-from .models import Category, Edition, Option, Poll, PollStatus
+from .models import Category, Edition, Option, Poll, PollStatus, Vote
 
 
 class CategoryInline(admin.TabularInline):
@@ -76,17 +76,7 @@ class PollAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {"fields": ("category", "title", "slug", "description")}),
         ("Calendario", {"fields": ("opens_at", "closes_at", "is_published", "closed_early")}),
-        (
-            "Reglas",
-            {
-                "fields": (
-                    "votes_per_voter",
-                    "vote_period",
-                    "results_visibility",
-                    "requires_account",
-                )
-            },
-        ),
+        ("Resultados", {"fields": ("results_visibility",)}),
     )
 
     def get_queryset(self, request):
@@ -109,3 +99,22 @@ class PollAdmin(admin.ModelAdmin):
     @admin.display(description="opciones", ordering="option_count")
     def option_count(self, poll):
         return poll.option_count
+
+
+@admin.register(Vote)
+class VoteAdmin(admin.ModelAdmin):
+    list_display = ("receipt", "cast_at", "voter", "edition", "category", "option")
+    list_filter = ("edition", "category")
+    list_select_related = ("voter", "edition", "category", "option")
+    search_fields = ("receipt", "voter__email", "option__name")
+    fields = ("receipt", "cast_at", "voter", "edition", "category", "option")
+    readonly_fields = ("receipt", "cast_at")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

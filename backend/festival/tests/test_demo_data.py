@@ -15,12 +15,17 @@ class LoadDemoDataTests(TestCase):
         self.assertEqual(Edition.objects.get().number, 60)
         self.assertEqual(Category.objects.count(), 3)
         statuses = sorted(poll.status for poll in Poll.objects.all())
-        expected = [PollStatus.CLOSED, PollStatus.OPEN, PollStatus.OPEN, PollStatus.UPCOMING]
+        expected = [PollStatus.CLOSED, *[PollStatus.OPEN] * 3, PollStatus.UPCOMING]
         self.assertEqual(statuses, sorted(expected))
-        self.assertEqual(Option.objects.count(), 14)
+        self.assertEqual(Option.objects.count(), 17)
+
+    def test_two_open_polls_share_a_category(self):
+        self.load()
+        music = Category.objects.get(name="Música")
+        self.assertEqual(music.polls.open().count(), 2)
 
     def test_running_it_again_does_not_duplicate_rows(self):
         self.load()
         self.load()
         counts = [model.objects.count() for model in (Edition, Category, Poll, Option)]
-        self.assertEqual(counts, [1, 3, 4, 14])
+        self.assertEqual(counts, [1, 3, 5, 17])

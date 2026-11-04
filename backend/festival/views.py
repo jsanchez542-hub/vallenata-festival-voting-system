@@ -1,10 +1,23 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.views import View
 from django.views.generic import DetailView, ListView, RedirectView, TemplateView
 
-from .models import Category, Edition, Poll, PollStatus, sorted_for_listing
+from .forms import VoteForm, already_voted_message, vote_refusal
+from .models import Category, DuplicateVote, Edition, Poll, PollStatus, Vote, sorted_for_listing
 
 PUBLIC_STATUSES = (PollStatus.OPEN, PollStatus.UPCOMING, PollStatus.CLOSED)
+
+
+def own_vote_in(user, category):
+    if not user.is_authenticated:
+        return None
+    return (
+        Vote.objects.in_category(user, category).select_related("category", "option__poll").first()
+    )
 
 
 class HomeView(TemplateView):
@@ -117,4 +130,91 @@ class PollDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["options"] = self.object.options.all()
+        context["own_vote"] = own_vote_in(self.request.user, self.object.category)
         return context
+
+
+class PollVotingMixin(LoginRequiredMixin):
+    extra_context = {"nav_section": "polls"}
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.poll = get_object_or_404(
+            Poll.objects.published().select_related("category__edition"), slug=kwargs["slug"]
+        )
+
+    def vote_form(self, data):
+        return VoteForm(data, poll=self.poll, voter=self.request.user)
+
+
+class VoteView(PollVotingMixin, TemplateView):
+    template_name = "festival/vote_options.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        own_vote = own_vote_in(self.request.user, self.poll.category)
+        context.update(
+            poll=self.poll,
+            options=self.poll.options.all(),
+            own_vote=own_vote,
+            refusal=vote_refusal(self.poll, own_vote),
+            selected=self.request.GET.get("option", ""),
+        )
+        return context
+
+
+class ConfirmVoteView(PollVotingMixin, View):
+    template_name = "festival/vote_confirm.html"
+
+    def get(self, request, *args, **kwargs):
+        form = self.vote_form(request.GET)
+        if not form.is_valid():
+            return self.refuse(form)
+        context = {
+            "poll": self.poll,
+            "option": form.cleaned_data["option"],
+            **self.extra_context,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.vote_form(request.POST)
+        if not form.is_valid():
+            return self.refuse(form)
+        try:
+            vote = Vote.cast(request.user, form.cleaned_data["option"])
+        except DuplicateVote:
+            messages.error(
+                request, already_voted_message(own_vote_in(request.user, self.poll.category))
+            )
+            return redirect(self.poll)
+        return redirect(vote)
+
+    def refuse(self, form):
+        refusals = form.non_field_errors()
+        messages.error(self.request, (refusals or form.errors["option"])[0])
+        if refusals:
+            return redirect(self.poll)
+        return redirect("festival:vote", slug=self.poll.slug)
+
+
+class VoteReceiptView(LoginRequiredMixin, DetailView):
+    template_name = "festival/vote_receipt.html"
+    context_object_name = "vote"
+    slug_field = "receipt"
+    slug_url_kwarg = "receipt"
+    extra_context = {"nav_section": "my-votes"}
+
+    def get_queryset(self):
+        return self.request.user.votes.select_related(
+            "edition", "category", "option__poll__category__edition"
+        )
+
+
+class MyVotesView(LoginRequiredMixin, ListView):
+    template_name = "festival/my_votes.html"
+    context_object_name = "votes"
+    extra_context = {"nav_section": "my-votes"}
+
+    def get_queryset(self):
+        return self.request.user.votes.select_related("edition", "category", "option__poll")

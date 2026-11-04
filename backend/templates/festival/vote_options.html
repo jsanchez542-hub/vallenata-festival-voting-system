@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Elegir opción{% endblock %}
+{% block description %}Elige una opción de {{ poll.title }}.{% endblock %}
+
+{% block banner %}{% include "festival/includes/vote_steps.html" with step=1 %}{% endblock %}
+
+{% block breadcrumb %}{% include "festival/includes/vote_trail.html" with step_label="Elegir opción" %}{% endblock %}
+
+{% block content %}
+  {% if refusal %}
+    <div class="container container--narrow section stack">
+      <div class="notice notice--warning"><p>{{ refusal }}</p></div>
+      <div class="form-actions">
+        {% if own_vote %}<a class="button" href="{{ own_vote.get_absolute_url }}">Ver comprobante</a>{% endif %}
+        <a class="button button--outline" href="{{ poll.get_absolute_url }}">Volver a la votación</a>
+      </div>
+    </div>
+  {% else %}
+    <form method="get" action="{% url 'festival:vote-confirm' poll.slug %}">
+      <div class="container container--narrow poll-layout">
+        <fieldset class="stack">
+          <legend class="legend-title">Elige una opción</legend>
+          <div class="choice-list">
+            {% for option in options %}
+              <label class="choice">
+                <input class="choice__input" type="radio" name="option" value="{{ option.pk }}" required{% if selected == option.pk|stringformat:"d" %} checked{% endif %}>
+                <span class="choice__body">
+                  <span class="choice__text">
+                    <span class="choice__name">{{ option.name }}</span>
+                    {% if option.detail %}<span class="choice__detail">{{ option.detail }}</span>{% endif %}
+                  </span>
+                  <span class="choice__mark" aria-hidden="true"></span>
+                </span>
+              </label>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      <div class="action-bar">
+        <div class="container container--narrow action-bar__inner">
+          <p class="action-bar__summary">El voto se registra solo cuando lo confirmas en el siguiente paso.</p>
+          <button class="button" type="submit">Continuar a la confirmación</button>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+{% endblock %}

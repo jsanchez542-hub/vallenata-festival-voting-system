@@ -44,15 +44,20 @@
       </section>
 
       <aside class="stack stack--roomy" aria-label="Votar y reglas">
-        {% if status == "open" and poll.requires_account and not user.is_authenticated %}
+        {% if status == "open" and not user.is_authenticated %}
           <div class="stack">
             <a class="button button--block" href="{% url 'accounts:sign-in' %}?next={{ request.path|urlencode }}">Ingresar para votar</a>
             <a class="button button--outline button--block" href="{% url 'accounts:sign-up' %}?next={{ request.path|urlencode }}">Crear cuenta</a>
           </div>
-        {% elif status == "open" %}
-          <div class="notice">
-            <p>El registro de votos todavía no está habilitado en esta versión. Por ahora puedes revisar las opciones y las reglas.</p>
+        {% elif status == "open" and own_vote %}
+          <div class="stack">
+            <div class="notice notice--success">
+              <p>Ya votaste en {{ own_vote.category.name }} por <strong>{{ own_vote.option.name }}</strong>{% if own_vote.option.poll_id != poll.pk %}, en {{ own_vote.option.poll.title }}{% endif %}. Se permite un voto por categoría en cada edición.</p>
+            </div>
+            <a class="button button--outline button--block" href="{{ own_vote.get_absolute_url }}">Ver comprobante</a>
           </div>
+        {% elif status == "open" %}
+          <a class="button button--block" href="{% url 'festival:vote' poll.slug %}">Votar</a>
         {% elif status == "upcoming" %}
           <button class="button button--block" type="button" disabled>{{ poll|poll_window }}</button>
         {% else %}
@@ -64,8 +69,8 @@
         <section class="stack" aria-labelledby="rules-title">
           <h2 id="rules-title">Reglas</h2>
           <dl class="rule-list">
-            <div class="rule-list__item"><dt>Votos por persona</dt><dd>{{ poll|vote_allowance }}</dd></div>
-            <div class="rule-list__item"><dt>Identificación</dt><dd>{% if poll.requires_account %}Con cuenta{% else %}Sin cuenta{% endif %}</dd></div>
+            <div class="rule-list__item"><dt>Votos permitidos</dt><dd>Uno por categoría en cada edición</dd></div>
+            <div class="rule-list__item"><dt>Identificación</dt><dd>Con cuenta</dd></div>
             <div class="rule-list__item"><dt>Resultados visibles</dt><dd>{{ poll.get_results_visibility_display }}</dd></div>
             <div class="rule-list__item"><dt>Apertura</dt><dd>{{ poll.opens_at|datetime_label }}</dd></div>
             <div class="rule-list__item"><dt>Cierre</dt><dd>{{ poll.closes_at|datetime_label }}</dd></div>

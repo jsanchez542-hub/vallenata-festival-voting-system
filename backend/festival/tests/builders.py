@@ -1,11 +1,18 @@
 from datetime import date, timedelta
 from itertools import count
 
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from festival.models import Category, Edition, Option, Poll
 
 _sequence = count(1)
+VOTER_PASSWORD = "vallenato-2027"
+
+
+def create_voter(email=None, **overrides):
+    email = email or f"votante{next(_sequence)}@ejemplo.co"
+    return get_user_model().objects.create_user(email, VOTER_PASSWORD, **overrides)
 
 
 def create_edition(**overrides):

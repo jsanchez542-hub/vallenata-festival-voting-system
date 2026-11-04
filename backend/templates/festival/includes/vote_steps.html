@@ -1,0 +1,11 @@
+<section class="page-banner on-stage" aria-labelledby="page-title">
+  <div class="container">
+    <h1 class="page-banner__title" id="page-title">{{ poll.title }}</h1>
+    <h2 class="visually-hidden" id="vote-steps-title">Pasos para votar</h2>
+    <ol class="flow-progress" aria-labelledby="vote-steps-title">
+      <li class="flow-progress__item"{% if step == 1 %} aria-current="step"{% endif %}>Elegir opción</li>
+      <li class="flow-progress__item"{% if step == 2 %} aria-current="step"{% endif %}>Confirmar</li>
+      <li class="flow-progress__item"{% if step == 3 %} aria-current="step"{% endif %}>Listo</li>
+    </ol>
+  </div>
+</section>

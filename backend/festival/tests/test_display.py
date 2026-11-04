@@ -4,13 +4,12 @@ from unittest import mock
 from django.test import SimpleTestCase
 from django.utils import timezone
 
-from festival.models import Edition, Poll, VotePeriod
+from festival.models import Edition, Poll
 from festival.templatetags.festival_display import (
     datetime_label,
     edition_dates,
     poll_window,
     relative_phrase,
-    vote_allowance,
 )
 
 NO_BREAK_SPACE = chr(0xA0)
@@ -75,10 +74,4 @@ class LabelTests(SimpleTestCase):
         edition = Edition(starts_on=date(2027, 12, 30), ends_on=date(2028, 1, 2))
         self.assertEqual(
             edition_dates(edition), "del 30 de diciembre de 2027 al 2 de enero de 2028"
-        )
-
-    def test_vote_allowance(self):
-        self.assertEqual(vote_allowance(Poll(votes_per_voter=1)), "1 voto en total")
-        self.assertEqual(
-            vote_allowance(Poll(votes_per_voter=3, vote_period=VotePeriod.DAY)), "3 votos por día"
         )

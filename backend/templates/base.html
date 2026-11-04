@@ -47,6 +47,7 @@
           <li><a class="site-nav__link" href="{% url 'festival:category-list' %}"{% if nav_section == "categories" %} aria-current="page"{% endif %}>Categorías</a></li>
           <li><a class="site-nav__link" href="{% url 'festival:poll-list' %}"{% if nav_section == "polls" %} aria-current="page"{% endif %}>Votaciones</a></li>
           {% if user.is_authenticated %}
+            <li><a class="site-nav__link" href="{% url 'festival:my-votes' %}"{% if nav_section == "my-votes" %} aria-current="page"{% endif %}>Mis votos</a></li>
             {% if user.is_staff %}
               <li><a class="site-nav__link" href="{% url 'admin:index' %}">Administración</a></li>
             {% endif %}
@@ -80,7 +81,7 @@
     <div class="container site-footer__grid">
       <div>
         <h2 class="site-footer__heading">Votaciones del Festival</h2>
-        <p>Versión en Django y MySQL de la Entrega 2 de Desarrollo Web, Fundación Universitaria del Área Andina.</p>
+        <p>Versión en Django y MySQL del proyecto de Desarrollo Web, Fundación Universitaria del Área Andina.</p>
         <p><a href="https://festivalvallenato.com" rel="noopener">Ir al sitio oficial del Festival</a></p>
       </div>
       <nav aria-label="Secundaria">

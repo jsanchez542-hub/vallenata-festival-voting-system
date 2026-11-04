@@ -5,7 +5,7 @@ from django import template
 from django.utils import timezone
 from django.utils.formats import date_format
 
-from festival.models import PollStatus, VotePeriod
+from festival.models import PollStatus
 
 register = template.Library()
 
@@ -63,12 +63,6 @@ def poll_window(poll):
     if status == PollStatus.CLOSED:
         return f"Cerró el {datetime_label(poll.closes_at)}"
     return "Sin publicar"
-
-
-@register.filter
-def vote_allowance(poll):
-    period = "en total" if poll.vote_period == VotePeriod.TOTAL else "por día"
-    return f"{counted(poll.votes_per_voter, 'voto', 'votos')} {period}"
 
 
 @register.filter
