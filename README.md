@@ -9,7 +9,7 @@ Public voting platform for the 60th Festival de la Leyenda Vallenata (Valledupar
 | 1. Analysis, design and prototype | Interactive front-end prototype that validates the flows and the interface, with data kept in the browser | Repository root, [live demo](https://jsanchez542-hub.github.io/vallenata-festival-voting-system/) |
 | 2. Django and MySQL | Data model, Django admin, user accounts and public pages that read from MySQL | [`backend/`](backend/README.md) |
 | 3. Votes and API | One vote per voter, category and edition, with a confirmation step and a receipt, each voter's votes, a read-only vote list in the admin and a JSON API | [`backend/`](backend/README.md) |
-| Next | Results under each poll's visibility setting, audit log and deployment | Not started |
+| 4. Results | Results under each poll's visibility setting, vote counts and a CSV export in the admin, and a change log of the admin | [`backend/`](backend/README.md) |
 
 This is an academic project. It is not an official site of the Fundación Festival de la Leyenda Vallenata, and all categories, polls and rules shown are sample data pending validation with the client.
 
@@ -175,6 +175,34 @@ The third deliverable asked for a real voting module on top of the second phase:
 - 94 tests. The new ones follow the course's test cases CP-01 to CP-10, including eight threads that post the same vote at once against MySQL and leave a single vote. GitHub Actions runs them on MySQL 8.4.
 - axe-core (WCAG 2.1 AA) reports no violations on the new pages at 390 and 1440 px, and their HTML passes html-validate.
 
+## Phase 4: results
+
+The final deliverable was a live demonstration of the whole application: the admin, accounts, voting, the duplicate check, results read from the database, MySQL and the validations. The backend covered everything except the results, so this phase adds them under the visibility setting each poll has kept since the second phase.
+
+![Results in the Django backend](docs/screenshots/django-results.jpg)
+
+### What it adds
+
+- A results page for every published poll at `/polls/<slug>/results/`, with the prototype's bars, the votes and share of each option and the leading option highlighted.
+- The prototype's three visibility settings, applied on the server: results from the moment a poll opens, results after it closes, or results for the organization only. Staff members always see the count, with a notice while the public cannot see it.
+- Links to the results from closed polls in the lists and on the poll page, and from the poll page and the receipt when the setting already allows it.
+- Vote counts in the admin: a column in the poll list and the votes of each option in the poll form, which also links to the results page and to a CSV export in the prototype's format.
+- A read-only change log in the admin, with who created, changed or deleted each edition, category, poll and option. It lists the history that the Django admin already records.
+- Sample votes in the demo data, a tenth of the prototype's, cast by accounts that cannot sign in, so the closed poll and the live poll show results from the start.
+
+### Technical decisions
+
+- Visibility is decided in the model (`Poll.results_visible_to`), so the page, the links and the tests share one rule. When the public cannot see the count, the view does not run the count query.
+- The count is a single `GROUP BY` query whatever the number of options. Options keep their own order, as in the prototype, and a tie highlights every leading option.
+- The admin list counts options and votes in the same query, so both counts use `distinct`; without it, the join multiplies the option count by the votes.
+- A confirmed vote is final, so the backend has no vote voiding and the vote list in the admin stays read-only.
+- The CSV starts with a byte order mark so that Excel reads it as UTF-8, and only staff members can download it.
+
+### Quality checks
+
+- 122 tests, 28 of them new: each visibility setting for the public, voters and staff, the count with ties and without votes, every state of the results page, the links, the admin counts, the CSV and the change log.
+- The new pages load without horizontal scrolling or console errors at 390 and 1440 px.
+
 ## Project structure
 
 ```
@@ -187,7 +215,7 @@ admin/          Prototype administration pages
 backend/
   accounts/     Custom user model, sign-up, sign-in and sign-out
   config/       Settings and URLs
-  festival/     Editions, categories, polls, options and votes: models, admin, views, the JSON API and the demo data command
+  festival/     Editions, categories, polls, options, votes and results: models, admin, views, the JSON API, the CSV export and the demo data command
   static/js/    Mobile menu, messages and page transitions
   templates/    Base layout, public pages, account forms and the admin override
 docs/           Screenshots
@@ -196,7 +224,7 @@ docs/           Screenshots
 ## Limitations
 
 - In the prototype, state lives in the browser (`localStorage`), so data is per device and sample data resets after 14 days. Its password hashing and sign-in lock run in the browser because there is no server; the Django backend uses Django's password hashers and limits failed sign-ins on the server.
-- The backend records votes but does not show results or keep an audit log yet. It has no production deployment, so the JSON API only answers where the project runs.
+- The Django backend has no production deployment, because the course only required running it locally. The results pages and the JSON API answer where the project runs; the prototype is the part published on GitHub Pages.
 - Rules, categories and polls are examples. The open questions for the client are tracked in the project analysis document.
 
 ## Team and credits

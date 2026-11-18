@@ -47,7 +47,7 @@ Django 5.2 LTS and MySQL implementation of the second and third deliverables. Th
 
 5. Start the server with `python manage.py runserver` and open http://127.0.0.1:8000. The admin is at http://127.0.0.1:8000/admin/ and the site header links to it when you sign in with a staff account.
 
-`load_demo_data` can run again at any time. It updates the same rows and moves the poll dates so that three polls stay open, one upcoming and one closed. Two of the open polls are in Música, so the one-vote-per-category rule can be tried, and the third is in Piloneras y vestuario. Voters sign up from the site; the command does not create accounts or votes.
+`load_demo_data` can run again at any time. It updates the same rows and moves the poll dates so that three polls stay open, one upcoming and one closed. Two of the open polls are in Música, so the one-vote-per-category rule can be tried, and the third is in Piloneras y vestuario. The command also casts sample votes in the closed poll and in the two Música polls, a tenth of the prototype's, from 90 accounts without a usable password, so nobody can sign in with them. Running it again adds no new votes. Real voters sign up from the site.
 
 ## Environment variables
 
@@ -84,6 +84,7 @@ The tests create `test_festival_voting`, run against it and drop it at the end. 
 | `/categories/<id>/` | Polls of a category |
 | `/polls/` | Polls of the current edition, filtered with `?status=open`, `upcoming` or `closed` |
 | `/polls/<slug>/` | Options and rules of a poll |
+| `/polls/<slug>/results/` | Results of a poll, under its visibility setting |
 | `/polls/<slug>/vote/` | Step 1: choose an option (signed in) |
 | `/polls/<slug>/vote/confirm/` | Step 2: GET shows the choice, POST stores the vote |
 | `/votes/<receipt>/` | Step 3: the receipt, visible only to its voter |
@@ -93,11 +94,17 @@ The tests create `test_festival_voting`, run against it and drop it at the end. 
 | `/accounts/sign-out/` | Ends the session (POST only) |
 | `/admin/` | Django admin |
 
-Drafts, polls in inactive categories and inactive categories return 404, also on the voting pages. The voting pages send visitors who are not signed in to the sign-in form and bring them back afterwards.
+Drafts, polls in inactive categories and inactive categories return 404, also on the voting and results pages. The voting pages send visitors who are not signed in to the sign-in form and bring them back afterwards.
 
 ## Voting rule
 
 A voter gets one vote per category in each edition, whatever the number of polls in the category. The form refuses a vote when the poll is upcoming or closed, when the option belongs to another poll and when the voter already voted in the category. The unique constraint `one_vote_per_voter_category_edition` in MySQL backs the same rule when two requests arrive at once, and the view answers both with the same message.
+
+## Results
+
+Each poll has a results visibility setting. With `live`, anyone sees the count once the poll opens; with `after_close`, once it closes, also when it is closed early; with `hidden`, only staff members see it. Staff members always see the count, with a notice while the public cannot. When the setting does not allow it, the page shows when the results will be published and does not run the count query.
+
+In the admin, the poll list has a vote column, and the poll form shows the votes of each option with links to the results page and to a CSV export (`/admin/festival/poll/<id>/results.csv`). The log entries list, under Administración, shows every change made in the admin and cannot be edited.
 
 ## JSON API
 
@@ -182,7 +189,7 @@ A vote keeps its edition and category next to the option, copied from the option
 ```
 config/       Settings, URLs and the WSGI entry point
 accounts/     User model and manager, forms, the sign-in limit, views and admin
-festival/     Models, admin, public and voting views, the JSON API, template filters and the load_demo_data command
+festival/     Models, admin, public, voting and results views, the JSON API, the CSV export, template filters and the load_demo_data command
 templates/    Base layout, public pages, account forms, the 404 page and the admin override
 static/js/    Mobile menu, message dismissal and page transition handling
 ```
