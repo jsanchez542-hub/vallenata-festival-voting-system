@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count
 from django.http import Http404, HttpResponse
@@ -9,6 +10,8 @@ from django.utils.html import format_html
 from .exports import results_csv
 from .forms import OptionInlineFormSet
 from .models import Category, Edition, Option, Poll, PollStatus, Vote
+
+ACTION_LABELS = {ADDITION: "Creó", CHANGE: "Cambió", DELETION: "Borró"}
 
 
 class CategoryInline(admin.TabularInline):
@@ -181,3 +184,28 @@ class VoteAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+@admin.register(LogEntry)
+class ChangeLogAdmin(admin.ModelAdmin):
+    list_display = ("action_time", "user", "action_label", "content_type", "object_repr", "detail")
+    list_filter = ("action_flag", "content_type")
+    list_select_related = ("user", "content_type")
+    search_fields = ("object_repr", "change_message", "user__email")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    @admin.display(description="acción", ordering="action_flag")
+    def action_label(self, entry):
+        return ACTION_LABELS[entry.action_flag]
+
+    @admin.display(description="detalle")
+    def detail(self, entry):
+        return entry.get_change_message()
