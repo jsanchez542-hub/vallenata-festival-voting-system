@@ -12,6 +12,7 @@ urlpatterns = [
     path("categories/<int:pk>/", views.CategoryDetailView.as_view(), name="category-detail"),
     path("polls/", views.PollListView.as_view(), name="poll-list"),
     path("polls/<slug:slug>/", views.PollDetailView.as_view(), name="poll-detail"),
+    path("polls/<slug:slug>/results/", views.PollResultsView.as_view(), name="poll-results"),
     path("polls/<slug:slug>/vote/", views.VoteView.as_view(), name="vote"),
     path("polls/<slug:slug>/vote/confirm/", views.ConfirmVoteView.as_view(), name="vote-confirm"),
     path("votes/<str:receipt>/", views.VoteReceiptView.as_view(), name="vote-receipt"),

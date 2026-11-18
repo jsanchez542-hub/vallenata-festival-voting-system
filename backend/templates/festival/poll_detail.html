@@ -55,15 +55,16 @@
               <p>Ya votaste en {{ own_vote.category.name }} por <strong>{{ own_vote.option.name }}</strong>{% if own_vote.option.poll_id != poll.pk %}, en {{ own_vote.option.poll.title }}{% endif %}. Se permite un voto por categoría en cada edición.</p>
             </div>
             <a class="button button--outline button--block" href="{{ own_vote.get_absolute_url }}">Ver comprobante</a>
+            {% if results_visible %}
+              <a class="button button--outline button--block" href="{% url 'festival:poll-results' poll.slug %}">Ver resultados</a>
+            {% endif %}
           </div>
         {% elif status == "open" %}
           <a class="button button--block" href="{% url 'festival:vote' poll.slug %}">Votar</a>
         {% elif status == "upcoming" %}
           <button class="button button--block" type="button" disabled>{{ poll|poll_window }}</button>
         {% else %}
-          <div class="notice">
-            <p>Esta votación ya cerró.</p>
-          </div>
+          <a class="button button--block" href="{% url 'festival:poll-results' poll.slug %}">Ver resultados</a>
         {% endif %}
 
         <section class="stack" aria-labelledby="rules-title">

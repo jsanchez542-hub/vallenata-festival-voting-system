@@ -131,6 +131,24 @@ class PollDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["options"] = self.object.options.all()
         context["own_vote"] = own_vote_in(self.request.user, self.object.category)
+        context["results_visible"] = self.object.results_visible_to(self.request.user)
+        return context
+
+
+class PollResultsView(DetailView):
+    template_name = "festival/poll_results.html"
+    context_object_name = "poll"
+    extra_context = {"nav_section": "polls"}
+
+    def get_queryset(self):
+        return Poll.objects.published().select_related("category__edition")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poll = self.object
+        if poll.results_visible_to(self.request.user):
+            context["tally"] = poll.tally()
+            context["staff_preview"] = not poll.results_are_public()
         return context
 
 
@@ -209,6 +227,11 @@ class VoteReceiptView(LoginRequiredMixin, DetailView):
         return self.request.user.votes.select_related(
             "edition", "category", "option__poll__category__edition"
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["results_visible"] = self.object.option.poll.results_visible_to(self.request.user)
+        return context
 
 
 class MyVotesView(LoginRequiredMixin, ListView):

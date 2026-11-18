@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load festival_display %}
+
+{% block title %}Resultados: {{ poll.title }}{% endblock %}
+{% block description %}Resultados de la votación {{ poll.title }}.{% endblock %}
+
+{% block banner %}
+  <section class="page-banner on-stage" aria-labelledby="page-title">
+    <div class="container">
+      <h1 class="page-banner__title" id="page-title">{{ poll.title }}</h1>
+      <div class="page-banner__meta">
+        <span class="status status--{{ poll.status }}">{{ poll.status.label }}</span>
+        <span class="meta-item">{{ poll.category.name }}</span>
+        <span class="meta-item">{{ poll|poll_window }}</span>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block breadcrumb %}
+  <li><a href="{{ poll.category.edition.get_absolute_url }}">{{ poll.category.edition.short_name }}</a></li>
+  <li><a href="{{ poll.category.get_absolute_url }}">{{ poll.category.name }}</a></li>
+  <li><a href="{{ poll.get_absolute_url }}">{{ poll.title }}</a></li>
+  <li><span aria-current="page">Resultados</span></li>
+{% endblock %}
+
+{% block content %}
+  {% with status=poll.status %}
+    <div class="container container--narrow poll-layout">
+      <section class="stack" aria-labelledby="results-title">
+        <h2 id="results-title">Resultados</h2>
+        {% if tally %}
+          {% if staff_preview %}
+            <div class="notice">
+              <p>El público todavía no ve este conteo. Lo ves porque eres de la organización.</p>
+            </div>
+          {% endif %}
+          <div class="stack">
+            <ol class="result-list">
+              {% for row in tally.rows %}
+                <li class="result-list__row">
+                  <div class="result-list__head">
+                    <span class="result-list__name">{{ row.option.name }}</span>
+                    <span class="result-list__figure">{{ row.votes|votes_label }} ({{ row.share|percent_label }})</span>
+                  </div>
+                  <div class="result-bar{% if row.is_leading %} result-bar--leading{% endif %}" role="img" aria-label="{{ row.option.name }}: {{ row.share|percent_label }} de los votos">
+                    <div class="result-bar__fill" style="--value: {{ row.share|stringformat:'.2f' }}"></div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ol>
+            <p class="field__hint">{{ tally.total|count_label }} voto{{ tally.total|pluralize }} válido{{ tally.total|pluralize }}.{% if status == "open" %} Conteo parcial: la votación sigue abierta.{% endif %}</p>
+          </div>
+        {% elif status == "upcoming" %}
+          <div class="notice">
+            <p>La votación todavía no abre, por eso no hay resultados.</p>
+          </div>
+        {% elif poll.results_visibility == "hidden" %}
+          <div class="notice">
+            <p>Los resultados de esta votación los conoce solo la organización.</p>
+          </div>
+        {% else %}
+          <div class="notice">
+            <p>Los resultados se publicarán al cierre: {{ poll.closes_at|datetime_label }}</p>
+          </div>
+        {% endif %}
+      </section>
+      <div class="form-actions">
+        <a class="button button--outline" href="{% url 'festival:poll-list' %}?status=open">Ver más votaciones abiertas</a>
+      </div>
+    </div>
+  {% endwith %}
+{% endblock %}

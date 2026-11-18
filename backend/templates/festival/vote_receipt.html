@@ -22,6 +22,9 @@
     </section>
     <div class="form-actions">
       <a class="button" href="{% url 'festival:my-votes' %}">Ver mis votos</a>
+      {% if results_visible %}
+        <a class="button button--outline" href="{% url 'festival:poll-results' vote.option.poll.slug %}">Ver resultados</a>
+      {% endif %}
       <a class="button button--outline" href="{% url 'festival:poll-list' %}?status=open">Ver más votaciones abiertas</a>
     </div>
   </div>

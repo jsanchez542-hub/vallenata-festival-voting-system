@@ -4,10 +4,11 @@ from itertools import count
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 
-from festival.models import Category, Edition, Option, Poll
+from festival.models import Category, Edition, Option, Poll, Vote
 
 _sequence = count(1)
 VOTER_PASSWORD = "vallenato-2027"
+CLOSED_WINDOW = {"opens_in": timedelta(days=-10), "closes_in": timedelta(days=-1)}
 
 
 def create_voter(email=None, **overrides):
@@ -50,3 +51,10 @@ def add_options(poll, *names):
         Option.objects.create(poll=poll, name=name, position=position)
         for position, name in enumerate(names, start=1)
     ]
+
+
+def cast_votes(option, amount):
+    voter_model = get_user_model()
+    for _ in range(amount):
+        voter = voter_model.objects.create_user(f"conteo{next(_sequence)}@ejemplo.co")
+        Vote.cast(voter, option)

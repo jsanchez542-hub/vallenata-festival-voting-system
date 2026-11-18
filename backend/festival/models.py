@@ -1,4 +1,5 @@
 import secrets
+from dataclasses import dataclass
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -157,6 +158,20 @@ class PollQuerySet(models.QuerySet):
         return self.select_related("category__edition").annotate(option_count=Count("options"))
 
 
+@dataclass(frozen=True)
+class OptionResult:
+    option: "Option"
+    votes: int
+    share: float
+    is_leading: bool
+
+
+@dataclass(frozen=True)
+class PollTally:
+    rows: list[OptionResult]
+    total: int
+
+
 class Poll(models.Model):
     category = models.ForeignKey(
         Category, models.PROTECT, related_name="polls", verbose_name="categoría"
@@ -228,6 +243,32 @@ class Poll(models.Model):
         if moment < self.opens_at:
             return PollStatus.UPCOMING
         return PollStatus.OPEN
+
+    def results_are_public(self, now=None):
+        status = self.status_at(now or timezone.now())
+        if self.results_visibility == ResultsVisibility.LIVE:
+            return status in (PollStatus.OPEN, PollStatus.CLOSED)
+        if self.results_visibility == ResultsVisibility.AFTER_CLOSE:
+            return status == PollStatus.CLOSED
+        return False
+
+    def results_visible_to(self, user, now=None):
+        return user.is_staff or self.results_are_public(now)
+
+    def tally(self):
+        options = list(self.options.annotate(vote_count=Count("votes")))
+        total = sum(option.vote_count for option in options)
+        top = max((option.vote_count for option in options), default=0)
+        rows = [
+            OptionResult(
+                option=option,
+                votes=option.vote_count,
+                share=option.vote_count * 100 / total if total else 0.0,
+                is_leading=top > 0 and option.vote_count == top,
+            )
+            for option in options
+        ]
+        return PollTally(rows=rows, total=total)
 
 
 class Option(models.Model):

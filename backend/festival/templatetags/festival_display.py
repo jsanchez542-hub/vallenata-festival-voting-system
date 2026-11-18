@@ -66,6 +66,21 @@ def poll_window(poll):
 
 
 @register.filter
+def count_label(amount):
+    return f"{amount:,}".replace(",", ".")
+
+
+@register.filter
+def votes_label(amount):
+    return "1 voto" if amount == 1 else f"{count_label(amount)} votos"
+
+
+@register.filter
+def percent_label(share):
+    return f"{share:.1f} %".replace(".", ",")
+
+
+@register.filter
 def edition_dates(edition):
     end = spanish_date(edition.ends_on, r"j \d\e F \d\e Y")
     if edition.starts_on.year == edition.ends_on.year:
