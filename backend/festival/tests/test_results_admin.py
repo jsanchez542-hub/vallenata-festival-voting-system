@@ -2,8 +2,10 @@ import csv
 import io
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
+
+from festival.exports import spreadsheet_text
 
 from .builders import (
     CLOSED_WINDOW,
@@ -70,9 +72,23 @@ class ResultsAdminTests(TestCase):
             ],
         )
 
+    def test_an_option_name_is_not_read_as_a_formula(self):
+        self.poll.options.filter(name="Presentación C").update(name="=1+1")
+        response = self.client.get(reverse("admin:festival_poll_results_csv", args=[self.poll.pk]))
+        rows = list(csv.reader(io.StringIO(response.content.decode("utf-8")[1:])))
+        self.assertEqual(rows[3][0], "'=1+1")
+
     def test_only_the_organization_can_export(self):
         url = reverse("admin:festival_poll_results_csv", args=[self.poll.pk])
         self.client.force_login(create_voter())
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("admin:login"), response["Location"])
+
+
+class SpreadsheetTextTests(SimpleTestCase):
+    def test_formula_characters_get_a_leading_quote(self):
+        for value in ("=1+1", "+57", "-3", "@SUM(A1)", "\tA", "\rA"):
+            with self.subTest(value=value):
+                self.assertEqual(spreadsheet_text(value), f"'{value}")
+        self.assertEqual(spreadsheet_text("Canción A"), "Canción A")

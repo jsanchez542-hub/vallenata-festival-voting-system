@@ -196,11 +196,11 @@ The final deliverable was a live demonstration of the whole application: the adm
 - The count is a single `GROUP BY` query whatever the number of options. Options keep their own order, as in the prototype, and a tie highlights every leading option.
 - The admin list counts options and votes in the same query, so both counts use `distinct`; without it, the join multiplies the option count by the votes.
 - A confirmed vote is final, so the backend has no vote voiding and the vote list in the admin stays read-only.
-- The CSV starts with a byte order mark so that Excel reads it as UTF-8, and only staff members can download it.
+- The CSV starts with a byte order mark so that Excel reads it as UTF-8, and only staff members can download it. An option name that starts with `=`, `+`, `-` or `@` gets a leading quote, so a spreadsheet shows it as text instead of running it as a formula.
 
 ### Quality checks
 
-- 122 tests, 28 of them new: each visibility setting for the public, voters and staff, the count with ties and without votes, every state of the results page, the links, the admin counts, the CSV and the change log.
+- 124 tests, 30 of them new: each visibility setting for the public, voters and staff, the count with ties and without votes, every state of the results page, the links, the admin counts, the CSV, its protection against formulas and the change log.
 - The new pages load without horizontal scrolling or console errors at 390 and 1440 px.
 
 ## Project structure
