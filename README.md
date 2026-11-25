@@ -119,7 +119,7 @@ The second deliverable asked for a Django project connected to MySQL: related mo
 
 The pages reuse the prototype's CSS, fonts and images straight from `assets/`, so both phases look the same. Setup instructions are in [backend/README.md](backend/README.md).
 
-![Poll edited in the Django admin](docs/screenshots/django-admin-poll.jpg)
+![Poll form in the Django admin, with the votes of each option](docs/screenshots/django-admin-poll.jpg)
 
 ### What it adds
 
