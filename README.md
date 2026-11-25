@@ -4,6 +4,8 @@
 
 Public voting platform for the 60th Festival de la Leyenda Vallenata (Valledupar, Colombia, April 28 to May 1, 2027). It is a university team project for the Web Development course at Fundación Universitaria del Área Andina, built in phases that follow the course deliverables.
 
+I designed and coded the prototype, which runs as a [live demo](https://jsanchez542-hub.github.io/vallenata-festival-voting-system/) in plain HTML, CSS and JavaScript, and I built my own backend for deliverables 2 to 4 in `backend/`, with Django 5.2 and MySQL. The analysis and design document is the team's shared work, and the application the team presented for deliverables 2 to 4 is in a separate team repository.
+
 | Phase | What it delivers | Where |
 | --- | --- | --- |
 | 1. Analysis, design and prototype | Interactive front-end prototype that validates the flows and the interface, with data kept in the browser | Repository root, [live demo](https://jsanchez542-hub.github.io/vallenata-festival-voting-system/) |
@@ -229,8 +231,6 @@ docs/           Screenshots
 
 ## Team and credits
 
-Team project, Web Development course (group 202660-6A-62), Fundación Universitaria del Área Andina, 2026. The analysis and design document is the shared work of the team.
-
-Prototype design and development, as the team's UX/UI and prototype lead: Miguel Sanchez Torres. The Django implementation in `backend/` is also his work; the team's joint submissions for the second and third deliverables are kept in a separate team repository.
+Team project, Web Development course (group 202660-6A-62), Fundación Universitaria del Área Andina, 2026. In the team I led the UX/UI design and the prototype, and the analysis and design document is the work of the whole team.
 
 Fonts: Raleway and Poppins, both under the SIL Open Font License, with their license texts in `assets/fonts`. The logo lettering comes from Alfa Slab One and Archivo, also under the SIL Open Font License.
