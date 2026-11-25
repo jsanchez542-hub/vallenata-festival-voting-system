@@ -1,18 +1,15 @@
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
 from festival.models import Poll
 
-from .builders import add_options, create_category, create_edition, create_poll
+from .builders import add_options, create_admin, create_category, create_edition, create_poll
 
 
 class PollAdminTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.admin = get_user_model().objects.create_superuser(
-            "admin@ejemplo.co", "vallenato-2027", first_name="Administración"
-        )
+        cls.admin = create_admin()
         cls.category = create_category(create_edition())
 
     def setUp(self):

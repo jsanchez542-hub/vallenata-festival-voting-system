@@ -4,9 +4,9 @@ from django.test import TestCase
 from django.urls import reverse
 
 from accounts.attempts import ACCOUNT_FAILURE_LIMIT, ADDRESS_FAILURE_LIMIT
+from festival.tests.builders import PASSWORD
 
 User = get_user_model()
-PASSWORD = "vallenato-2027"
 
 
 class SignUpTests(TestCase):

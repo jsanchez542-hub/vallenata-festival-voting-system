@@ -7,13 +7,18 @@ from django.utils import timezone
 from festival.models import Category, Edition, Option, Poll, Vote
 
 _sequence = count(1)
-VOTER_PASSWORD = "vallenato-2027"
+PASSWORD = "vallenato-2027"
 CLOSED_WINDOW = {"opens_in": timedelta(days=-10), "closes_in": timedelta(days=-1)}
 
 
 def create_voter(email=None, **overrides):
     email = email or f"votante{next(_sequence)}@ejemplo.co"
-    return get_user_model().objects.create_user(email, VOTER_PASSWORD, **overrides)
+    return get_user_model().objects.create_user(email, PASSWORD, **overrides)
+
+
+def create_admin(**overrides):
+    values = {"first_name": "Administración", **overrides}
+    return get_user_model().objects.create_superuser("admin@ejemplo.co", PASSWORD, **values)
 
 
 def create_edition(**overrides):

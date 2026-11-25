@@ -1,7 +1,6 @@
 import csv
 import io
 
-from django.contrib.auth import get_user_model
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 
@@ -11,17 +10,12 @@ from .builders import (
     CLOSED_WINDOW,
     add_options,
     cast_votes,
+    create_admin,
     create_category,
     create_edition,
     create_poll,
     create_voter,
 )
-
-
-def create_admin():
-    return get_user_model().objects.create_superuser(
-        "admin@ejemplo.co", "vallenato-2027", first_name="Administración"
-    )
 
 
 class ResultsAdminTests(TestCase):

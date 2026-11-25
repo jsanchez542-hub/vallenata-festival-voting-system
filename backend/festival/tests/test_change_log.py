@@ -1,15 +1,8 @@
 from django.contrib.admin.models import ADDITION, LogEntry
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from .builders import create_category, create_edition
-
-
-def create_admin():
-    return get_user_model().objects.create_superuser(
-        "admin@ejemplo.co", "vallenato-2027", first_name="Administración"
-    )
+from .builders import create_admin, create_category, create_edition
 
 
 class ChangeLogTests(TestCase):

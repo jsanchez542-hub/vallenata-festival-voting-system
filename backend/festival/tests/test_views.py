@@ -1,10 +1,9 @@
 from datetime import timedelta
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from .builders import add_options, create_category, create_edition, create_poll
+from .builders import add_options, create_category, create_edition, create_poll, create_voter
 
 
 class PublicPagesTests(TestCase):
@@ -65,8 +64,7 @@ class PublicPagesTests(TestCase):
         self.assertContains(response, f'href="{sign_in}?next={self.song.get_absolute_url()}"')
 
     def test_signed_in_visitor_gets_the_vote_button(self):
-        user = get_user_model().objects.create_user("votante@ejemplo.co", "vallenato-2027")
-        self.client.force_login(user)
+        self.client.force_login(create_voter("votante@ejemplo.co"))
         response = self.client.get(self.song.get_absolute_url())
         self.assertContains(response, f'href="{reverse("festival:vote", args=[self.song.slug])}"')
         self.assertNotContains(response, "Ingresar para votar")

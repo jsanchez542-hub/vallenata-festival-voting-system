@@ -2,8 +2,9 @@ from django.contrib.auth import authenticate, get_user_model
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 
+from festival.tests.builders import PASSWORD
+
 User = get_user_model()
-PASSWORD = "vallenato-2027"
 
 
 class UserManagerTests(TestCase):

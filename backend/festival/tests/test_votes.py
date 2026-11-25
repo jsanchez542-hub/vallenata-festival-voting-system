@@ -1,7 +1,6 @@
 import threading
 from datetime import timedelta
 
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, connection
 from django.db.models import ProtectedError
@@ -10,7 +9,14 @@ from django.urls import reverse
 
 from festival.models import DuplicateVote, Vote
 
-from .builders import add_options, create_category, create_edition, create_poll, create_voter
+from .builders import (
+    add_options,
+    create_admin,
+    create_category,
+    create_edition,
+    create_poll,
+    create_voter,
+)
 
 
 def build_ballot(test):
@@ -231,7 +237,7 @@ class VoteAdminTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         build_ballot(cls)
-        cls.admin = get_user_model().objects.create_superuser("admin@ejemplo.co", "vallenato-2027")
+        cls.admin = create_admin()
         cls.vote = Vote.cast(cls.voter, cls.song_a)
 
     def setUp(self):
