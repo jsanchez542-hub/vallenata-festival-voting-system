@@ -66,12 +66,12 @@ Settings read these variables from the environment first and then from `backend/
 
 ```
 python manage.py test
-pip install ruff
+pip install ruff==0.17.2
 ruff check .
 ruff format --check .
 ```
 
-The tests create `test_festival_voting`, run against it and drop it at the end. ESLint for the two scripts in `static/js` runs from the repository root with `npm run lint`.
+The tests create `test_festival_voting`, run against it and drop it at the end. Ruff is pinned to the version that CI runs, so both format the code the same way. ESLint for the two scripts in `static/js` runs from the repository root with `npm run lint`.
 
 ## Pages
 
