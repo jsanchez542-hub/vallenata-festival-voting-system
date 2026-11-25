@@ -62,10 +62,10 @@ The logo is four bars of different heights, one for each vallenato rhythm (paseo
 
 ### Quality checks
 
-- Accessibility audit with axe-core (WCAG 2.1 AA): no violations on mobile or desktop.
+- No axe-core violations (WCAG 2.1 AA) on any page or on the 404 page at 390 and 1440 px, checked by hand with axe-core 4.14 on 25 November 2026.
 - Contrast of the text over the photos checked from 360 to 1920 px wide.
 - No horizontal scroll from 320 px, and no layout shift while pages load.
-- Valid HTML (html-validate) and no ESLint errors (`npm run lint`).
+- Valid HTML and no ESLint errors: CI runs `npm run check:html` (html-validate) and `npm run lint` on every push.
 - Keyboard navigation, visible focus and reduced motion support.
 - No runtime dependencies and no build step.
 
@@ -142,8 +142,8 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 ### Quality checks
 
 - Tests for models, constraints, status filters, template filters, the admin, public pages, accounts and the demo data command. GitHub Actions runs them against MySQL 8.4 on every push, together with ruff and ESLint.
-- Accessibility audit with axe-core (WCAG 2.1 AA): no violations at 390 and 1440 px on any page, including form errors and the open mobile menu.
-- Valid HTML (html-validate) on every page and form state.
+- No axe-core violations (WCAG 2.1 AA) at 390 and 1440 px on any page, including form errors and the open mobile menu, checked by hand on 23 October 2026.
+- Valid HTML (html-validate) on every page and form state, checked by hand on the same day.
 - The home page runs three queries however many polls and categories it shows.
 
 ## Phase 3: votes, validation and API
@@ -175,7 +175,7 @@ The third deliverable asked for a real voting module on top of the second phase:
 ### Quality checks
 
 - 94 tests. The new ones follow the course's test cases CP-01 to CP-10, including eight threads that post the same vote at once against MySQL and leave a single vote. GitHub Actions runs them on MySQL 8.4.
-- axe-core (WCAG 2.1 AA) reports no violations on the new pages at 390 and 1440 px, and their HTML passes html-validate.
+- axe-core (WCAG 2.1 AA) reports no violations on the new pages at 390 and 1440 px, and their HTML passes html-validate, both checked by hand on 4 November 2026.
 
 ## Phase 4: results
 
@@ -202,7 +202,7 @@ The final deliverable was a live demonstration of the whole application: the adm
 
 ### Quality checks
 
-- 124 tests, 30 of them new: each visibility setting for the public, voters and staff, the count with ties and without votes, every state of the results page, the links, the admin counts, the CSV, its protection against formulas and the change log.
+- 124 tests at the end of the phase, 30 of them new: each visibility setting for the public, voters and staff, the count with ties and without votes, every state of the results page, the links, the admin counts, the CSV, its protection against formulas and the change log.
 - The new pages load without horizontal scrolling or console errors at 390 and 1440 px.
 
 ## Project structure
