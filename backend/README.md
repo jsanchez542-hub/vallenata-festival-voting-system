@@ -1,6 +1,6 @@
 # Backend
 
-Django 5.2 LTS and MySQL implementation of the second and third deliverables. The templates use the prototype's CSS, fonts and images from `../assets`, and every date is shown in Colombia time (America/Bogota).
+Django 5.2 LTS and MySQL implementation of the second, third and fourth deliverables. The templates use the prototype's CSS, fonts and images from `../assets`, and every date is shown in Colombia time (America/Bogota).
 
 ## Requirements
 
