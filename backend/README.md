@@ -47,7 +47,7 @@ Django 5.2 LTS and MySQL implementation of the second, third and fourth delivera
 
 5. Start the server with `python manage.py runserver` and open http://127.0.0.1:8000. The admin is at http://127.0.0.1:8000/admin/ and the site header links to it when you sign in with a staff account.
 
-`load_demo_data` can run again at any time. It updates the same rows and moves the poll dates so that three polls stay open, one upcoming and one closed. Two of the open polls are in Música, so the one-vote-per-category rule can be tried, and the third is in Piloneras y vestuario. The command also casts sample votes in the closed poll and in the two Música polls, a tenth of the prototype's, from 90 accounts without a usable password, so nobody can sign in with them. Running it again adds no new votes. Real voters sign up from the site.
+`load_demo_data` can run again at any time. It updates the same rows and moves the poll dates so that three polls stay open, one upcoming and one closed. Two of the open polls are in Música, so the rule of one vote per category can be tried, and the third is in Piloneras y vestuario. The command also casts sample votes in the closed poll and in the two Música polls, a tenth of the prototype's, from 90 accounts without a usable password, so nobody can sign in with them. Running it again adds no new votes. Real voters sign up from the site.
 
 ## Environment variables
 
@@ -55,8 +55,8 @@ Django 5.2 LTS and MySQL implementation of the second, third and fourth delivera
 | --- | --- | --- |
 | `DJANGO_SECRET_KEY` | Signs sessions and tokens | Required |
 | `DJANGO_DEBUG` | `true` for local development | `false` |
-| `DJANGO_ALLOWED_HOSTS` | Comma-separated host names the site answers to | `127.0.0.1,localhost` |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | Comma-separated origins allowed to post forms, needed behind a proxy | Empty |
+| `DJANGO_ALLOWED_HOSTS` | Host names the site answers to, separated by commas | `127.0.0.1,localhost` |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | Origins allowed to post forms, separated by commas; needed behind a proxy | Empty |
 | `DB_NAME`, `DB_USER`, `DB_PASSWORD` | Database credentials | Required |
 | `DB_HOST`, `DB_PORT` | Database server | `127.0.0.1`, `3306` |
 
@@ -88,7 +88,7 @@ The tests create `test_festival_voting`, run against it and drop it at the end. 
 | `/polls/<slug>/vote/` | Step 1: choose an option (signed in) |
 | `/polls/<slug>/vote/confirm/` | Step 2: GET shows the choice, POST stores the vote |
 | `/votes/<receipt>/` | Step 3: the receipt, visible only to its voter |
-| `/my-votes/` | Votes of the signed-in voter |
+| `/my-votes/` | Votes of the voter who is signed in |
 | `/api/categories/` | Categories, polls and options as JSON (GET only) |
 | `/accounts/sign-up/`, `/accounts/sign-in/` | Account forms |
 | `/accounts/sign-out/` | Ends the session (POST only) |

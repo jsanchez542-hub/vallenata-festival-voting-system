@@ -8,9 +8,9 @@ I designed and coded the prototype, which runs as a [live demo](https://jsanchez
 
 | Phase | What it delivers | Where |
 | --- | --- | --- |
-| 1. Analysis, design and prototype | Interactive front-end prototype that validates the flows and the interface, with data kept in the browser | Repository root, [live demo](https://jsanchez542-hub.github.io/vallenata-festival-voting-system/) |
+| 1. Analysis, design and prototype | Interactive prototype that validates the flows and the interface, with its data kept in the browser | Repository root, [live demo](https://jsanchez542-hub.github.io/vallenata-festival-voting-system/) |
 | 2. Django and MySQL | Data model, Django admin, user accounts and public pages that read from MySQL | [`backend/`](backend/README.md) |
-| 3. Votes and API | One vote per voter, category and edition, with a confirmation step and a receipt, each voter's votes, a read-only vote list in the admin and a JSON API | [`backend/`](backend/README.md) |
+| 3. Votes and API | One vote per voter, category and edition, with a confirmation step and a receipt, each voter's votes, a vote list in the admin that cannot be edited and a JSON API | [`backend/`](backend/README.md) |
 | 4. Results | Results under each poll's visibility setting, vote counts and a CSV export in the admin, and a change log of the admin | [`backend/`](backend/README.md) |
 
 This is an academic project. It is not an official site of the Fundación Festival de la Leyenda Vallenata, and all categories, polls and rules shown are sample data pending validation with the client.
@@ -52,7 +52,7 @@ Two of the sample polls use different rules on purpose, so the difference is vis
 
 ### Design
 
-The palette and typefaces come from the Festival's own website: black and white, the Festival red (#DD3333) as the only accent, Raleway for headings and Poppins for text, both self-hosted. The layout borrows its structure from Colombia's tourism pages: a transparent menu over a full-width photo, a grey breadcrumb band and wide white content. The home page sets the edition number large in red next to the Festival's name, as the official poster does.
+The palette and typefaces come from the Festival's own website: black and white, the Festival red (#DD3333) as the only accent, Raleway for headings and Poppins for text, both served from `assets/fonts` instead of a font service. The layout borrows its structure from Colombia's tourism pages: a transparent menu over an image that spans the whole width, a grey breadcrumb band and wide white content. The home page sets the edition number large in red next to the Festival's name, as the official poster does.
 
 The administration area has its own console layout with a black sidebar, so it does not read as part of the public site.
 
@@ -111,7 +111,7 @@ Then open http://localhost:8080.
 | Voter | votante@ejemplo.co | Votante2027 |
 | Administrator | admin@ejemplo.co | Admin2027 |
 
-The sign-in page has one-click buttons for both accounts, and every page links to it from the footer. You can also create your own voter account, and the footer has a button to restore the sample data.
+The sign-in page has a button for each account that signs in with one click, and every page links to it from the footer. You can also create your own voter account, and the footer has a button to restore the sample data.
 
 ## Phase 2: Django and MySQL
 
@@ -124,7 +124,7 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 ### What it adds
 
 - Four related models with constraints in the database: an edition cannot end before it starts, a poll cannot close before it opens, and names are unique within each edition and each poll.
-- The prototype's per-poll rules as model fields: votes per voter, period, results visibility and whether an account is required. Phase 3 replaced all of them except results visibility with the course's voting rule.
+- The rules each poll had in the prototype, as model fields: votes per voter, period, results visibility and whether an account is required. Phase 3 replaced all of them except results visibility with the course's voting rule.
 - An admin with the categories inside each edition and the options inside each poll, a filter by poll status, and a check that blocks publishing a poll with fewer than two options.
 - Accounts that sign in with email, record when the person accepted the personal data policy and use Django's password validators. Every two minutes, each address gets five failed sign-ins per account and twenty in total.
 - Public pages for the home, the editions, the categories of an edition, the polls of a category, all polls filtered by status, and each poll with its options and rules.
@@ -148,7 +148,7 @@ The pages reuse the prototype's CSS, fonts and images straight from `assets/`, s
 
 ## Phase 3: votes, validation and API
 
-The third deliverable asked for a real voting module on top of the second phase: sign in, choose an option, confirm it and store the vote in MySQL. The course set the central rule for every team: one vote per user, category and edition, even when a category has several polls, while voting in other categories stays possible. It also asked for server-side checks against closed polls, options from other polls and unauthorized requests, protection against simultaneous duplicates, a page with each voter's categories, an admin view of the votes and a GET endpoint that returns the categories and their options as JSON.
+The third deliverable asked for a real voting module on top of the second phase: sign in, choose an option, confirm it and store the vote in MySQL. The course set the central rule for every team: one vote per user, category and edition, even when a category has several polls, while voting in other categories stays possible. It also asked for checks on the server against closed polls, options from other polls and unauthorized requests, protection against simultaneous duplicates, a page with each voter's categories, an admin view of the votes and a GET endpoint that returns the categories and their options as JSON.
 
 ![Voting flow in the Django backend](docs/screenshots/django-vote-flow.jpg)
 
@@ -164,7 +164,7 @@ The third deliverable asked for a real voting module on top of the second phase:
 
 ### Technical decisions
 
-- The course's rule replaces the prototype's per-poll limits: votes per voter, per-day periods and polls without an account. Keeping those fields would leave admin settings that do nothing, so the migration removes them. Results visibility stays for the next phase.
+- The course's rule replaces the limits each poll had in the prototype: votes per voter, daily periods and polls without an account. Keeping those fields would leave admin settings that do nothing, so the migration removes them. Results visibility stays for the next phase.
 - The rule is enforced twice. The form gives a clear message in normal use, and the unique constraint in MySQL settles requests that pass the form check at the same moment. The view saves inside a transaction, catches the integrity error and answers with the same message instead of a server error.
 - A vote stores its edition and category next to the option because MySQL can only enforce a unique constraint on columns of one table. Both are copied from the option when the vote is cast, and the admin rejects the two edits that would make them disagree: moving a poll with votes to another category and moving a category with votes to another edition.
 - The receipt column is unique too, so an integrity error can also mean a repeated code. Casting a vote checks whether the ballot already exists before calling it a duplicate, and otherwise tries again with a new code.
@@ -189,7 +189,7 @@ The final deliverable was a live demonstration of the whole application: the adm
 - The prototype's three visibility settings, applied on the server: results from the moment a poll opens, results after it closes, or results for the organization only. Staff members always see the count, with a notice while the public cannot see it.
 - Links to the results from closed polls in the lists and on the poll page, and from the poll page and the receipt when the setting already allows it.
 - Vote counts in the admin: a column in the poll list and the votes of each option in the poll form, which also links to the results page and to a CSV export in the prototype's format.
-- A read-only change log in the admin, with who created, changed or deleted each edition, category, poll and option. It lists the history that the Django admin already records.
+- A change log in the admin that cannot be edited, with who created, changed or deleted each edition, category, poll and option. It lists the history that the Django admin already records.
 - Sample votes in the demo data, a tenth of the prototype's, cast by accounts that cannot sign in, so the closed poll and the live poll show results from the start.
 
 ### Technical decisions
@@ -197,7 +197,7 @@ The final deliverable was a live demonstration of the whole application: the adm
 - Visibility is decided in the model (`Poll.results_visible_to`), so the page, the links and the tests share one rule. When the public cannot see the count, the view does not run the count query.
 - The count is a single `GROUP BY` query whatever the number of options. Options keep their own order, as in the prototype, and a tie highlights every leading option.
 - The admin list counts options and votes in the same query, so both counts use `distinct`; without it, the join multiplies the option count by the votes.
-- A confirmed vote is final, so the backend has no vote voiding and the vote list in the admin stays read-only.
+- A confirmed vote is final, so the backend has no vote voiding and nobody can edit the vote list in the admin.
 - The CSV starts with a byte order mark so that Excel reads it as UTF-8, and only staff members can download it. An option name that starts with `=`, `+`, `-` or `@` gets a leading quote, so a spreadsheet shows it as text instead of running it as a formula.
 
 ### Quality checks
@@ -210,7 +210,7 @@ The final deliverable was a live demonstration of the whole application: the adm
 ```
 assets/
   css/          Design tokens, base, layout, components, page styles and admin console
-  fonts/        Self-hosted fonts and their licenses
+  fonts/        Font files and their licenses
   img/          Photos, favicons, social preview card and the logo in every color version
   js/           Prototype data layer, UI modules and one module per page
 admin/          Prototype administration pages
