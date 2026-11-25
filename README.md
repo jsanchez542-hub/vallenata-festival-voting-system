@@ -52,7 +52,7 @@ Two of the sample polls use different rules on purpose, so the difference is vis
 
 ### Design
 
-The palette and typefaces come from the Festival's own website: black and white, the Festival red (#DD3333) as the only accent, Raleway for headings and Poppins for text, both served from `assets/fonts` instead of a font service. The layout borrows its structure from Colombia's tourism pages: a transparent menu over an image that spans the whole width, a grey breadcrumb band and wide white content. The home page sets the edition number large in red next to the Festival's name, as the official poster does.
+The palette and typefaces come from the Festival's own website: black and white, the Festival red (#DD3333) as the only accent, Raleway for headings and Poppins for text, both served from `assets/fonts` instead of a font service. The layout borrows its structure from Colombia's tourism pages: a transparent menu over a photo that spans the whole width, a grey breadcrumb band and wide white content. The home page sets the edition number large in red next to the Festival's name, as the official poster does.
 
 The administration area has its own console layout with a black sidebar, so it does not read as part of the public site.
 
@@ -62,8 +62,8 @@ The logo is four bars of different heights, one for each vallenato rhythm (paseo
 
 ### Quality checks
 
-- No axe-core violations (WCAG 2.1 AA) on any page or on the 404 page at 390 and 1440 px, checked by hand with axe-core 4.14 on 25 November 2026.
-- Contrast of the text over the photos checked from 360 to 1920 px wide.
+- No axe-core violations (WCAG 2.1 AA) at 390 and 1440 px on any page, the 404 page included, checked by hand with axe-core 4.14 on 25 November 2026.
+- Contrast of the text over the photos measured against the lightest pixel behind each line, from 360 to 1920 px wide, on the same day.
 - No horizontal scroll from 320 px, and no layout shift while pages load.
 - Valid HTML and no ESLint errors: CI runs `npm run check:html` (html-validate) and `npm run lint` on every push.
 - Keyboard navigation, visible focus and reduced motion support.
@@ -234,3 +234,5 @@ docs/           Screenshots
 Team project, Web Development course (group 202660-6A-62), Fundación Universitaria del Área Andina, 2026. In the team I led the UX/UI design and the prototype, and the analysis and design document is the work of the whole team.
 
 Fonts: Raleway and Poppins, both under the SIL Open Font License, with their license texts in `assets/fonts`. The logo lettering comes from Alfa Slab One and Archivo, also under the SIL Open Font License.
+
+Photos: [Acordeonero en plena actuacion](https://commons.wikimedia.org/wiki/File:Acordeonero_en_plena_actuacion.jpg) and [Final de la Novena Version del Festival](https://commons.wikimedia.org/wiki/File:Final_de_la_Novena_Version_del_Festival.jpg), both by Beto Mireles on Wikimedia Commons under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), taken on 20 September 2015; the second shows the Festival Internacional Vallenato de Monterrey. The copies in `assets/img` (`hero-accordion` and `festival-crowd`) are cropped and resized, and they keep the same license. The site footer credits them too.

@@ -19,7 +19,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 68% 30%;
+  object-position: 18% 30%;
 }
 
 .hero__media::after {
@@ -95,11 +95,11 @@
   padding-block: calc(var(--header-height) + clamp(3rem, 2rem + 4vw, 5.5rem)) clamp(3rem, 2rem + 4vw, 5.5rem);
   background:
     linear-gradient(rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.72)),
-    url("../img/hero-accordion.jpg") center 35% / cover no-repeat,
+    url("../img/hero-accordion.jpg") 22% 35% / cover no-repeat,
     var(--color-stage);
   background:
     linear-gradient(rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.72)),
-    image-set(url("../img/hero-accordion.webp") type("image/webp"), url("../img/hero-accordion.jpg") type("image/jpeg")) center 35% / cover no-repeat,
+    image-set(url("../img/hero-accordion.webp") type("image/webp"), url("../img/hero-accordion.jpg") type("image/jpeg")) 22% 35% / cover no-repeat,
     var(--color-stage);
 }
 
@@ -143,11 +143,11 @@
   color: #ffffff;
   background:
     linear-gradient(180deg, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.8) 100%),
-    url("../img/jury-panel.jpg") center 58% / cover no-repeat,
+    url("../img/festival-crowd.jpg") center 58% / cover no-repeat,
     var(--color-ink);
   background:
     linear-gradient(180deg, rgb(0 0 0 / 0.88) 0%, rgb(0 0 0 / 0.8) 100%),
-    image-set(url("../img/jury-panel.webp") type("image/webp"), url("../img/jury-panel.jpg") type("image/jpeg")) center 58% / cover no-repeat,
+    image-set(url("../img/festival-crowd.webp") type("image/webp"), url("../img/festival-crowd.jpg") type("image/jpeg")) center 58% / cover no-repeat,
     var(--color-ink);
 }
 

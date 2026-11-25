@@ -16,6 +16,12 @@ const ADMIN_LINKS = [
   { key: "results", label: "Resultados", href: "results.html" },
 ];
 
+const PHOTO_CREDITS = {
+  accordion: "https://commons.wikimedia.org/wiki/File:Acordeonero_en_plena_actuacion.jpg",
+  crowd: "https://commons.wikimedia.org/wiki/File:Final_de_la_Novena_Version_del_Festival.jpg",
+  license: "https://creativecommons.org/licenses/by-sa/4.0/deed.es",
+};
+
 // When the browser skips a page transition its promises reject; the navigation itself completes normally.
 const ignoreSkippedTransition = ({ viewTransition }) => {
   if (!viewTransition) return;
@@ -252,7 +258,19 @@ function buildFooter(root) {
     el(
       "div",
       { class: "site-footer__bottom" },
-      el("div", { class: "container" }, "2026. Proyecto académico en equipo, grupo ", el("span", { class: "nowrap" }, "202660-6A-62"), "."),
+      el(
+        "div",
+        { class: "container" },
+        "2026. Proyecto académico en equipo, grupo ",
+        el("span", { class: "nowrap" }, "202660-6A-62"),
+        ". Fotos de Beto Mireles en Wikimedia Commons (",
+        el("a", { href: PHOTO_CREDITS.accordion, rel: "noopener" }, "acordeonero"),
+        " y ",
+        el("a", { href: PHOTO_CREDITS.crowd, rel: "noopener" }, "público"),
+        "), licencia ",
+        el("a", { href: PHOTO_CREDITS.license, rel: "license noopener" }, "CC BY-SA 4.0"),
+        ".",
+      ),
     ),
   );
 }
