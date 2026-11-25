@@ -7,6 +7,32 @@
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#000000">
   <style>
+    /* Pages serves this file at any missing address, so relative font paths would break.
+       The first source is the project site on GitHub Pages, the second a local server. */
+    @font-face {
+      font-family: "Raleway";
+      src: url("/vallenata-festival-voting-system/assets/fonts/raleway-var.woff2") format("woff2"),
+        url("/assets/fonts/raleway-var.woff2") format("woff2");
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Poppins";
+      src: url("/vallenata-festival-voting-system/assets/fonts/poppins-400.woff2") format("woff2"),
+        url("/assets/fonts/poppins-400.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Poppins";
+      src: url("/vallenata-festival-voting-system/assets/fonts/poppins-600.woff2") format("woff2"),
+        url("/assets/fonts/poppins-600.woff2") format("woff2");
+      font-weight: 600;
+      font-display: swap;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -15,7 +41,7 @@
       padding: 1.5rem;
       background: #000000;
       color: #ffffff;
-      font-family: "Segoe UI", system-ui, sans-serif;
+      font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
       line-height: 1.6;
     }
 
@@ -25,9 +51,12 @@
 
     h1 {
       margin: 0 0 0.75rem;
-      font-family: Rockwell, Georgia, serif;
+      font-family: "Raleway", "Segoe UI", system-ui, sans-serif;
       font-size: 2.25rem;
+      font-weight: 800;
       line-height: 1.1;
+      letter-spacing: -0.015em;
+      text-wrap: balance;
     }
 
     p {
@@ -40,9 +69,9 @@
       padding: 0.75rem 1.5rem;
       background: #dd3333;
       color: #ffffff;
-      font-weight: 700;
+      font-weight: 600;
       text-decoration: none;
-      border-radius: 0.2rem;
+      border-radius: 0.625rem;
     }
 
     a:hover {
