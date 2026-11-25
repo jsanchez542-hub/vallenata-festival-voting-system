@@ -105,6 +105,12 @@ class SignInTests(TestCase):
         self.sign_in(password="")
         self.assertLocked(self.sign_in())
 
+    def test_failures_from_another_address_do_not_lock_the_voter_out(self):
+        for _ in range(ACCOUNT_FAILURE_LIMIT):
+            self.sign_in(password="otra-clave", REMOTE_ADDR="203.0.113.7")
+        response = self.sign_in(follow=True)
+        self.assertContains(response, "Ya ingresaste.")
+
     def test_limits_failures_from_one_address_across_accounts(self):
         for index in range(ADDRESS_FAILURE_LIMIT):
             self.sign_in(password="otra-clave", email=f"persona{index}@ejemplo.co")

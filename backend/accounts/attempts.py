@@ -36,6 +36,7 @@ class SignInAttempts:
             .first()
         )
         target = f"account:{account}" if account else f"email:{email.lower()}"
+        # The address is part of the key so that failures from elsewhere cannot lock a voter out.
         self.account_key = cache_key(address, target)
         self.address_key = cache_key(address)
 
