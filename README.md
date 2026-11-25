@@ -48,7 +48,7 @@ The client has not defined most voting rules yet, so nothing is hard coded to a 
 | Results visibility | Organization only, after close, or live |
 | Registration | Required or not |
 
-Two of the sample polls use different rules on purpose, so the difference is visible in the interface. Security rules from the analysis are applied too: passwords are stored as salted SHA-256 hashes, sign-in locks for two minutes after five failed attempts, administration pages require an administrator session, a confirmed vote cannot be changed and every administrative action is written to an audit log. Publishing a poll requires at least two options and a closing date after the opening date, and an option that already has votes cannot be renamed or removed.
+Two of the sample polls use different rules on purpose, so the difference is visible in the interface. Security rules from the analysis are applied too: the prototype stores passwords in the browser as salted SHA-256 hashes (the Django backend uses Django's password hashers), sign-in locks for two minutes after five failed attempts, administration pages require an administrator session, a confirmed vote cannot be changed and every administrative action is written to an audit log. Publishing a poll requires at least two options and a closing date after the opening date, and an option that already has votes cannot be renamed or removed.
 
 ### Design
 
